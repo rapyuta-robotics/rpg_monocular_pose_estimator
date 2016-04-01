@@ -76,7 +76,8 @@ bool PoseEstimator::estimateBodyPose(cv::Mat image, double time_to_predict)
                           max_blob_area_, max_width_height_distortion_, max_circular_distortion_,
                           detected_led_positions, distorted_detection_centers_, camera_matrix_K_,
                           camera_distortion_coeffs_);
-
+    
+    std::cout << "detected_led_positions.size() = " << detected_led_positions.size() << std::endl;
     if (detected_led_positions.size() >= min_num_leds_detected_) // If found enough LEDs, Reinitialise
     {
       // Reinitialise

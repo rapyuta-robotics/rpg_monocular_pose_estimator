@@ -50,7 +50,8 @@ void LEDDetector::findLeds(const cv::Mat &image, cv::Rect ROI, const int &thresh
   ksize.height = 0;
   GaussianBlur(bw_image.clone(), gaussian_image, ksize, gaussian_sigma, gaussian_sigma, cv::BORDER_DEFAULT);
 
-  //cv::imshow( "Gaussian", gaussian_image );
+  cv::imshow( "Gaussian", gaussian_image );
+  cv::waitKey(30);
 
   // Find all contours
   std::vector<std::vector<cv::Point> > contours;
