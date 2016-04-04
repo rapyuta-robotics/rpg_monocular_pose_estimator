@@ -35,7 +35,7 @@
 		<remap from="/cv_camera/camera_info" to="/camera/camera_info"/>
     </node-->
 
-    <node name="simple_image_publisher" pkg="simple_image_publisher" type="image_publisher" args="/home/daikimaekawa/test3.jpg" output="screen">
+    <node name="simple_image_publisher" pkg="simple_image_publisher" type="image_publisher" args="$(find simple_image_publisher)/images/test3.jpg" output="screen">
         <remap from="/camera/image" to="/camera/image_raw"/>
     </node>
 
