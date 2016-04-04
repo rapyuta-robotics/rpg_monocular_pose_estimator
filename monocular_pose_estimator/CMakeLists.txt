@@ -3,6 +3,8 @@ project(monocular_pose_estimator)
 
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS} -O3")
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../monocular_pose_estimator_lib/)
+
 # search for everything we need to build the package
 find_package(catkin REQUIRED COMPONENTS
   roscpp
