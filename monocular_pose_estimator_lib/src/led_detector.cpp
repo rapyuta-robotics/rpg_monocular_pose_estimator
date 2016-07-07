@@ -48,14 +48,14 @@ void LEDDetector::findLeds(const cv::Mat &image, cv::Rect ROI, const int &thresh
   cv::Size ksize; // Gaussian kernel size. If equal to zero, then the kerenl size is computed from the sigma
   ksize.width = 0;
   ksize.height = 0;
-  GaussianBlur(bw_image.clone(), gaussian_image, ksize, gaussian_sigma, gaussian_sigma, cv::BORDER_DEFAULT);
+  GaussianBlur(bw_image, gaussian_image, ksize, gaussian_sigma, gaussian_sigma, cv::BORDER_DEFAULT);
 
-  cv::imshow( "Gaussian", gaussian_image );
+  cv::imshow("Gaussian", gaussian_image);
   cv::waitKey(30);
 
   // Find all contours
-  std::vector<std::vector<cv::Point> > contours;
-  cv::findContours(gaussian_image.clone(), contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+  std::vector<std::vector<cv::Point>> contours;
+  cv::findContours(gaussian_image, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
 
   unsigned numPoints = 0; // Counter for the number of detected LEDs
 
@@ -63,7 +63,7 @@ void LEDDetector::findLeds(const cv::Mat &image, cv::Rect ROI, const int &thresh
   std::vector<cv::Point2f> distorted_points;
 
   // Identify the blobs in the image
-  for (unsigned i = 0; i < contours.size(); i++)
+  for (unsigned i = 0; i < contours.size(); ++i)
   {
     double area = cv::contourArea(contours[i]); // Blob area
     cv::Rect rect = cv::boundingRect(contours[i]); // Bounding box

@@ -66,5 +66,18 @@ target_link_libraries(monocular_pose_estimator_nodelet
    yaml-cpp
    ${catkin_LIBRARIES}
    ${OpenCV_LIBRARIES}
- )
+)
  
+install(TARGETS monocular_pose_estimator monocular_pose_estimator_nodelet
+    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(DIRECTORY launch marker_positions
+    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+
+install(FILES monocular_pose_estimator_nodelet.xml
+    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)

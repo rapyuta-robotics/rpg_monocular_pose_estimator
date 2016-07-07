@@ -35,9 +35,25 @@
 		<remap from="/cv_camera/camera_info" to="/camera/camera_info"/>
     </node-->
 
-    <node name="simple_image_publisher" pkg="simple_image_publisher" type="image_publisher" args="$(find simple_image_publisher)/images/test3.jpg" output="screen">
+	<include file="$(find video_stream_opencv)/launch/camera.launch" >
+	     <!-- node name and ros graph name -->
+	     <arg name="camera_name" value="head_camera" />
+	     <!-- means video device 0, /dev/video0 -->
+	     <arg name="video_stream_provider" value="file:///home/wolfv/Downloads/pattern_small001.avi" />
+	     <!-- throttling the querying of frames to -->
+	     <arg name="fps" value="30" />
+	     <!-- setting frame_id -->
+	     <arg name="frame_id" value="head_camera" />
+	     <!-- camera info loading, take care as it needs the "file:///" at the start , e.g.:
+	     "file:///$(find your_camera_package)/config/your_camera.yaml" -->
+	     <arg name="camera_info_url" value="file:///home/wolfv/.ros/camera_info/head_camera.yaml" />
+	     <!-- visualize on an image_view window the stream generated -->
+	     <arg name="visualize" value="true" />
+	</include>
+
+    <!-- <node name="simple_image_publisher" pkg="simple_image_publisher" type="image_publisher" args="$(find simple_image_publisher)/images/test3.jpg" output="screen">
         <remap from="/camera/image" to="/camera/image_raw"/>
-    </node>
+     </node>-->
 
 	<!-- rosbag play -->
 	<!--node pkg="rosbag" type="play" name="player" output="screen" args="-d 1 -l $(find monocular_pose_estimator)/bags/test_data.bag"/-->

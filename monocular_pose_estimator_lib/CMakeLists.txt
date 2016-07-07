@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.4.6)
 project(monocular_pose_estimator_lib)
 
-#set(CMAKE_CXX_FLAGS "-O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 
 find_package(catkin REQUIRED COMPONENTS cmake_modules roscpp)
 find_package(Eigen REQUIRED)
@@ -22,18 +22,17 @@ include_directories(
 
 file(GLOB SOURCEFILES "src/*.cpp")
 
-add_library( ${PROJECT_NAME} SHARED ${SOURCEFILES})
-add_dependencies( ${PROJECT_NAME} SHARED ${catkin_EXPORTED_TARGETS} ) 
-target_link_libraries( ${PROJECT_NAME} ${catkin_LIBRARIES} ${OpenCV_LIBS})
+add_library(${PROJECT_NAME} SHARED ${SOURCEFILES})
+add_dependencies(${PROJECT_NAME} SHARED ${catkin_EXPORTED_TARGETS} ) 
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
 install(TARGETS ${PROJECT_NAME} 
-    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION} 
-    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION} 
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 )
 
 install(DIRECTORY include/${PROJECT_NAME}/
-    DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}    
-    FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
-    PATTERN ".svn" EXCLUDE
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}    
+  FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
+  PATTERN ".svn" EXCLUDE
 )
-
