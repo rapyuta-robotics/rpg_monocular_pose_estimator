@@ -132,7 +132,7 @@ void MPENode::cameraInfoCallback(const sensor_msgs::CameraInfo::ConstPtr& msg)
  */
 void MPENode::imageCallback(const sensor_msgs::Image::ConstPtr& image_msg)
 {
-
+  ROS_WARN("Image receivede");
   // Check whether already received the camera calibration data
   if (!have_camera_info_)
   {

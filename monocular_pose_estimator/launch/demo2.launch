@@ -2,19 +2,20 @@
 
 	<!-- Name of the YAML file containing the marker positions -->
 	<!--arg name="YAML_file_name" default="demo2"/-->
-    <arg name="YAML_file_name" default="demo_marker_positions"/>
+	<arg name="YAML_file_name" default="pattern_small"/>
 
 	<!-- File containing the the marker positions in the trackable's frame of reference -->
 	<arg name="marker_positions_file" default="$(find monocular_pose_estimator)/marker_positions/$(arg YAML_file_name).yaml"/> 
-
 	<group ns="monocular_pose_estimator" >
-        <node name="monocular_pose_estimator" pkg="monocular_pose_estimator" type="monocular_pose_estimator" respawn="false" output="screen">
-        <!--node name="monocular_pose_estimator" pkg="monocular_pose_estimator" type="monocular_pose_estimator" respawn="false" output="screen" launch-prefix="xterm -e lldb-3.6"-->
+		<node name="monocular_pose_estimator" pkg="monocular_pose_estimator" type="monocular_pose_estimator" respawn="false" output="screen"
+			launch-prefix="valgrind --tool=callgrind --instr-atstart=no">
+		<remap from="/camera/image_raw" to="/head_camera/image_raw" />
+		<remap from="/camera/camera_info" to="/head_camera/camera_info" />
 
-            <rosparam command="load" file="$(arg marker_positions_file)"/>
-			<param name= "threshold_value" value = "140" />
+			<rosparam command="load" file="$(arg marker_positions_file)"/>
+			<param name= "threshold_value" value = "230" />
 			<param name= "gaussian_sigma" value = "0.6" />
-			<param name= "min_blob_area" value = "10" />
+			<param name= "min_blob_area" value = "5" />
 			<param name= "max_blob_area" value = "200" />
 			<param name= "max_width_height_distortion" value = "0.5" />
 			<param name= "max_circular_distortion" value = "0.5" />
@@ -24,7 +25,7 @@
 			<param name= "valid_correspondence_threshold" value = "0.7" />
 			<param name= "roi_border_thickness" value="20" />
 		</node>
-	
+
 		<node name="view_visualisation_image" pkg="image_view" type="image_view" args="image:=/monocular_pose_estimator/image_with_detections" />
 	</group>
 	
@@ -33,28 +34,29 @@
 		<param name="camera_info_url" value="$(find monocular_pose_estimator)/cfg/camera_info.yaml"/>
 		<remap from="/cv_camera/image_raw" to="/camera/image_raw"/>
 		<remap from="/cv_camera/camera_info" to="/camera/camera_info"/>
-    </node-->
+	</node-->
 
 	<include file="$(find video_stream_opencv)/launch/camera.launch" >
-	     <!-- node name and ros graph name -->
-	     <arg name="camera_name" value="head_camera" />
-	     <!-- means video device 0, /dev/video0 -->
-	     <arg name="video_stream_provider" value="file:///home/wolfv/Downloads/pattern_small001.avi" />
-	     <!-- throttling the querying of frames to -->
-	     <arg name="fps" value="30" />
-	     <!-- setting frame_id -->
-	     <arg name="frame_id" value="head_camera" />
+		<!-- node name and ros graph name -->
+		<arg name="camera_name" value="head_camera" />
+		<!-- means video device 0, /dev/video0 -->
+		<arg name="video_stream_provider" value="file:///home/wolfv/Downloads/pattern_small001.avi" />
+		<!-- throttling the querying of frames to -->
+		<arg name="fps" value="30" />
+		<!-- setting frame_id -->
+		<arg name="frame_id" value="head_camera" />
 	     <!-- camera info loading, take care as it needs the "file:///" at the start , e.g.:
 	     "file:///$(find your_camera_package)/config/your_camera.yaml" -->
 	     <arg name="camera_info_url" value="file:///home/wolfv/.ros/camera_info/head_camera.yaml" />
 	     <!-- visualize on an image_view window the stream generated -->
 	     <arg name="visualize" value="true" />
-	</include>
+	 </include>
+
 
     <!-- <node name="simple_image_publisher" pkg="simple_image_publisher" type="image_publisher" args="$(find simple_image_publisher)/images/test3.jpg" output="screen">
         <remap from="/camera/image" to="/camera/image_raw"/>
-     </node>-->
+    </node>-->
 
-	<!-- rosbag play -->
-	<!--node pkg="rosbag" type="play" name="player" output="screen" args="-d 1 -l $(find monocular_pose_estimator)/bags/test_data.bag"/-->
+    <!-- rosbag play -->
+    <!--node pkg="rosbag" type="play" name="player" output="screen" args="-d 1 -l $(find monocular_pose_estimator)/bags/test_data.bag"/-->
 </launch>
