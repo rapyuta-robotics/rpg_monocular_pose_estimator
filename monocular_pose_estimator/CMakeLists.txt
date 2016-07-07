@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.4.6)
 project(monocular_pose_estimator)
 
-set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS} -O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../monocular_pose_estimator_lib/)
 
