@@ -1,0 +1,10 @@
+<library path="lib/libimage_publisher_nodelet">
+    <class name="simple_image_publisher/ImagePublisherNodelet"
+           type="simple_image_publisher::ImagePublisherNodelet"
+           base_class_type="nodelet::Nodelet">
+        
+        <description>
+            simple_image_publisher nodelet.
+        </description>
+   </class>
+</library>

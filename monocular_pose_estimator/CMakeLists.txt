@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   monocular_pose_estimator_lib
   cmake_modules
+  camera_calibration_parsers
   nodelet
 )
 
@@ -53,7 +54,19 @@ target_link_libraries(monocular_pose_estimator
    yaml-cpp
    ${catkin_LIBRARIES}
    ${OpenCV_LIBRARIES}
- )
+)
+
+# make the node
+add_executable(monocular_pose_estimator_cvcamera
+  src/node.cpp src/monocular_pose_estimator_cvcamera.cpp
+)
+add_dependencies(monocular_pose_estimator_cvcamera ${catkin_EXPORTED_TARGETS}  ${PROJECT_NAME}_gencfg)
+
+target_link_libraries(monocular_pose_estimator_cvcamera
+   yaml-cpp
+   ${catkin_LIBRARIES}
+   ${OpenCV_LIBRARIES}
+)
 
 # make the nodelet
 add_library(monocular_pose_estimator_nodelet
@@ -68,7 +81,7 @@ target_link_libraries(monocular_pose_estimator_nodelet
    ${OpenCV_LIBRARIES}
 )
  
-install(TARGETS monocular_pose_estimator monocular_pose_estimator_nodelet
+install(TARGETS monocular_pose_estimator monocular_pose_estimator_nodelet monocular_pose_estimator_cvcamera
     ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
     LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
     RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

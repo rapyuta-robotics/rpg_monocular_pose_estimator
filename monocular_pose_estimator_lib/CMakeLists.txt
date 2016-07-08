@@ -7,6 +7,7 @@ find_package(catkin REQUIRED COMPONENTS cmake_modules roscpp)
 find_package(Eigen REQUIRED)
 find_package(OpenCV REQUIRED)
 
+
 catkin_package(
   INCLUDE_DIRS include
   DEPENDS eigen opencv
@@ -21,6 +22,12 @@ include_directories(
 )
 
 file(GLOB SOURCEFILES "src/*.cpp")
+
+option(MPE_ENABLE_DEBUG_IMAGES "Enable the display of debugging images (works only if you have a graphical interface)" OFF)
+
+if(MPE_ENABLE_DEBUG_IMAGES)
+	add_definitions(-DMPE_SHOW_DEBUG_IMAGE)
+endif(MPE_ENABLE_DEBUG_IMAGES)
 
 add_library(${PROJECT_NAME} SHARED ${SOURCEFILES})
 add_dependencies(${PROJECT_NAME} SHARED ${catkin_EXPORTED_TARGETS} ) 

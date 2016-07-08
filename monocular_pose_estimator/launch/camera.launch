@@ -7,31 +7,26 @@
 	<arg name="marker_positions_file" default="$(find monocular_pose_estimator)/marker_positions/$(arg YAML_file_name).yaml"/> 
 
 	<group ns="monocular_pose_estimator" >
-		<node name="monocular_pose_estimator" pkg="monocular_pose_estimator" type="monocular_pose_estimator" respawn="false" 
-			output="screen" 
-			launch-prefix="valgrind --tool=callgrind --instr-atstart=no"> 
+		<node name="monocular_pose_estimator" pkg="monocular_pose_estimator" type="monocular_pose_estimator_cvcamera" respawn="false" output="screen"> 
 			<rosparam command="load" file="$(arg marker_positions_file)"/>
-			<param name= "threshold_value" value = "230" />
-			<param name= "gaussian_sigma" value = "0.3" />
-			<param name= "min_blob_area" value = "5" />
-			<param name= "max_blob_area" value = "1000" />
+			<param name= "threshold_value" value="140" />
+			<param name= "camera_info_url" value="/home/wolfv/.ros/camera_info/head_camera.yaml" />
+			<param name= "gaussian_sigma" value="0.6" />
+			<param name= "min_blob_area" value="10" />
+			<param name= "max_blob_area" value="200" />
 			<param name= "max_width_height_distortion" value = "0.5" />
 			<param name= "max_circular_distortion" value = "0.5" />
 			<param name= "back_projection_pixel_tolerance" value = "5" />
 			<param name= "nearest_neighbour_pixel_tolerance" value = "7" />
 			<param name= "certainty_threshold" value = "0.75" />
 			<param name= "valid_correspondence_threshold" value = "0.7" />
-			<param name= "roi_border_thickness" value="20" />
+      		<param name= "roi_border_thickness" value="20" />
 		</node>
-		
+	
 		<node name="view_visualisation_image" pkg="image_view" type="image_view" args="image:=/monocular_pose_estimator/image_with_detections" />
 	</group>
 
-	<node name="simple_image_publisher" pkg="simple_image_publisher" type="image_publisher" output="screen">
-		<remap from="/camera/image" to="/camera/image_raw"/>
-		<param name="camera_info_url" value="file://$(find simple_image_publisher)/config/head_camera.yaml"/>
-		<param name="image_file" value="$(find simple_image_publisher)/images/test_pattern.jpg"/>
-		<param name="update_rate" value="10"/>
-	</node>
-
+	<!-- rosbag play -->
+<!-- 	<node pkg="rosbag" type="play" name="player" output="screen" args="-d 1 -l $(find monocular_pose_estimator)/bags/test_data.bag"/>
+ -->
 </launch>
