@@ -100,7 +100,7 @@ void LEDDetector::findLeds(const cv::Mat &image, cv::Rect ROI, const int &thresh
   // These will be used for the visualization
   distorted_detection_centers = distorted_points;
 
-  if (numPoints > 0)
+  if (numPoints > 0 && numPoints < 7)
   {
     // Vector that will contain the undistorted points
     std::vector<cv::Point2f> undistorted_points;
@@ -120,6 +120,9 @@ void LEDDetector::findLeds(const cv::Mat &image, cv::Rect ROI, const int &thresh
       point(1) = undistorted_points[j].y;
       pixel_positions(j) = point;
     }
+  }
+  if (numPoints >= 7) {
+    std::cout << "Too many potential points detected! Remove noise or add a better filter" << std::endl;
   }
 }
 

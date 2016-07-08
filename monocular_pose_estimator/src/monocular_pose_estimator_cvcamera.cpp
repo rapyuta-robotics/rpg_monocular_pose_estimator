@@ -54,7 +54,7 @@ MPENode::MPENode(const ros::NodeHandle& nh, const ros::NodeHandle& nh_private)
   }
 
   video_capture_.set(CV_CAP_PROP_FPS, 30);
-  video_capture_.set(CV_CAP_PROP_MODE, PALETTE_YVU420);
+  // video_capture_.set(CV_CAP_PROP_MODE, PALETTE_YVU420);
   video_capture_.set(CV_CAP_PROP_CONVERT_RGB, false);
 
   // Initialize pose publisher
