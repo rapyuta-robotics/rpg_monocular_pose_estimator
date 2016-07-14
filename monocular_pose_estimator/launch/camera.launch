@@ -22,11 +22,6 @@
 			<param name= "valid_correspondence_threshold" value = "0.7" />
       		<param name= "roi_border_thickness" value="20" />
 		</node>
-	
-		<node name="view_visualisation_image" pkg="image_view" type="image_view" args="image:=/monocular_pose_estimator/image_with_detections" />
 	</group>
 
-	<!-- rosbag play -->
-<!-- 	<node pkg="rosbag" type="play" name="player" output="screen" args="-d 1 -l $(find monocular_pose_estimator)/bags/test_data.bag"/>
- -->
 </launch>

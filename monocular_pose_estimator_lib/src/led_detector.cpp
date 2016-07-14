@@ -60,7 +60,7 @@ void LEDDetector::findLeds(const cv::Mat &image, cv::Rect ROI, const int &thresh
   else {
     cv::Mat region_image;
     cv::threshold(image(ROI), region_image, threshold_value, 255, cv::THRESH_TOZERO);
-    cv::blur(image, image, ksize);
+    cv::blur(region_image, region_image, ksize);
 
     // GaussianBlur(region_image, region_image, ksize, gaussian_sigma, gaussian_sigma, cv::BORDER_DEFAULT);
     #ifdef MPE_SHOW_DEBUG_IMAGE

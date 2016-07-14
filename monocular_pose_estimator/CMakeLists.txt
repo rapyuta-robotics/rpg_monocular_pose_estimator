@@ -50,6 +50,11 @@ add_executable(monocular_pose_estimator
 )
 add_dependencies(monocular_pose_estimator ${catkin_EXPORTED_TARGETS}  ${PROJECT_NAME}_gencfg)
 
+option(MPE_ENABLE_DEBUG_IMAGES "Enable the display of debugging images (works only if you have a graphical interface)" OFF)
+if(MPE_ENABLE_DEBUG_IMAGES)
+  add_definitions(-DMPE_SHOW_DEBUG_IMAGE)
+endif(MPE_ENABLE_DEBUG_IMAGES)
+
 target_link_libraries(monocular_pose_estimator
    yaml-cpp
    ${catkin_LIBRARIES}

@@ -26,7 +26,6 @@
 			<!-- all other parameters are with the nodelet manager due to namespace issues with dynamic reconfigure -->
     </node>
 
-  	<node name="view_visualisation_image" pkg="image_view" type="image_view" args="image:=/monocular_pose_estimator/image_with_detections" />
   </group>
 
 	<!-- rosbag play -->

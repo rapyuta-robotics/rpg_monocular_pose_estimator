@@ -28,6 +28,9 @@
  */
 
 #include "monocular_pose_estimator/monocular_pose_estimator.h"
+#include <camera_calibration_parsers/parse.h>
+#include <iostream>
+
 
 namespace monocular_pose_estimator
 {
@@ -58,6 +61,17 @@ MPENode::MPENode(const ros::NodeHandle& nh, const ros::NodeHandle& nh_private)
 
   // Create the marker positions from the test points
   List4DPoints positions_of_markers_on_object;
+    
+  Eigen::Matrix<double, 3, 1> pattern_center;
+  XmlRpc::XmlRpcValue pattern_center_in;
+  if (!nh_private_.getParam("pattern_center", pattern_center_in)) {
+    pattern_center.setZero();
+  } else {
+    pattern_center(0) = pattern_center_in["x"];
+    pattern_center(1) = pattern_center_in["y"];
+    pattern_center(2) = pattern_center_in["z"];
+    std::cout << "Pattern Center" << pattern_center;
+  }
 
   // Read in the marker positions from the YAML parameter file
   XmlRpc::XmlRpcValue points_list;
@@ -74,15 +88,30 @@ MPENode::MPENode(const ros::NodeHandle& nh, const ros::NodeHandle& nh_private)
     for (int i = 0; i < points_list.size(); i++)
     {
       Eigen::Matrix<double, 4, 1> temp_point;
-      temp_point(0) = points_list[i]["x"];
-      temp_point(1) = points_list[i]["y"];
-      temp_point(2) = points_list[i]["z"];
+      temp_point(0) = (double) points_list[i]["x"] + pattern_center[0];
+      temp_point(1) = (double) points_list[i]["y"] + pattern_center[1];
+      temp_point(2) = (double) points_list[i]["z"] + pattern_center[2];
       temp_point(3) = 1;
+      std::cout << "Temp Point: " << temp_point << std::endl;
       positions_of_markers_on_object(i) = temp_point;
     }
   }
+
   trackable_object_.setMarkerPositions(positions_of_markers_on_object);
   ROS_INFO("The number of markers on the object are: %d", (int )positions_of_markers_on_object.size());
+
+  std::string camera_info_url;
+  if (!nh_private_.getParam("camera_info_url", camera_info_url)) {
+    ROS_INFO("No camera info url set!");
+  } else {
+    std::string camera_name;
+    camera_calibration_parsers::readCalibration(camera_info_url, 
+                                                camera_name,
+                                                cam_info_);
+    sensor_msgs::CameraInfo::ConstPtr cp(new sensor_msgs::CameraInfo(cam_info_));
+    cameraInfoCallback(cp);
+    ROS_INFO("Camera info loaded for %s", camera_name.c_str());
+  }
 }
 
 /**

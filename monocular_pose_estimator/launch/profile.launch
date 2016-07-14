@@ -23,8 +23,6 @@
 			<param name= "valid_correspondence_threshold" value = "0.7" />
 			<param name= "roi_border_thickness" value="20" />
 		</node>
-		
-		<node name="view_visualisation_image" pkg="image_view" type="image_view" args="image:=/monocular_pose_estimator/image_with_detections" />
 	</group>
 
 	<node name="simple_image_publisher" pkg="simple_image_publisher" type="image_publisher" output="screen">
