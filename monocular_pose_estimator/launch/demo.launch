@@ -7,7 +7,7 @@
 	<arg name="marker_positions_file" default="$(find monocular_pose_estimator)/marker_positions/$(arg YAML_file_name).yaml"/> 
 
 	<group ns="monocular_pose_estimator" >
-		<node name="monocular_pose_estimator" pkg="monocular_pose_estimator" type="monocular_pose_estimator" respawn="false" output="screen"> 
+		<node name="monocular_pose_estimator" pkg="monocular_pose_estimator" type="monocular_pose_estimator" respawn="false"> 
 			<rosparam command="load" file="$(arg marker_positions_file)"/>
 			<param name= "threshold_value" value = "140" />
 			<param name= "gaussian_sigma" value = "0.6" />

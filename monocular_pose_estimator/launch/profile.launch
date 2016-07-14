@@ -9,7 +9,8 @@
 	<group ns="monocular_pose_estimator" >
 		<node name="monocular_pose_estimator" pkg="monocular_pose_estimator" type="monocular_pose_estimator" respawn="false" 
 			output="screen" 
-			launch-prefix="valgrind --tool=callgrind --instr-atstart=no"> 
+			launch-prefix="valgrind --tool=callgrind --instr-atstart=no"
+			> 
 			<rosparam command="load" file="$(arg marker_positions_file)"/>
 			<param name= "threshold_value" value = "230" />
 			<param name= "gaussian_sigma" value = "0.3" />
@@ -28,8 +29,8 @@
 	<node name="simple_image_publisher" pkg="simple_image_publisher" type="image_publisher" output="screen">
 		<remap from="/camera/image" to="/camera/image_raw"/>
 		<param name="camera_info_url" value="file://$(find simple_image_publisher)/config/head_camera.yaml"/>
-		<param name="image_file" value="$(find simple_image_publisher)/images/test_pattern.jpg"/>
-		<param name="update_rate" value="10"/>
+		<param name="image_file" value="$(find simple_image_publisher)/images/screenie_large.png"/>
+		<param name="update_rate" value="30"/>
 	</node>
 
 </launch>

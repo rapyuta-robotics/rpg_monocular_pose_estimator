@@ -61,7 +61,6 @@ void LEDDetector::findLeds(const cv::Mat &image, cv::Rect ROI, const int &thresh
     cv::Mat region_image;
     cv::threshold(image(ROI), region_image, threshold_value, 255, cv::THRESH_TOZERO);
     cv::blur(region_image, region_image, ksize);
-
     // GaussianBlur(region_image, region_image, ksize, gaussian_sigma, gaussian_sigma, cv::BORDER_DEFAULT);
     #ifdef MPE_SHOW_DEBUG_IMAGE
     cv::imshow("Gaussian", region_image);
@@ -74,8 +73,6 @@ void LEDDetector::findLeds(const cv::Mat &image, cv::Rect ROI, const int &thresh
 
   // Vector for containing the detected points that will be undistorted later
   std::vector<cv::Point2f> distorted_points;
-
-  std::cout << "Found " << contours.size() << " potential LEDs" << std::endl;
 
   // Identify the blobs in the image
   for (unsigned i = 0; i < contours.size(); ++i)
@@ -96,7 +93,6 @@ void LEDDetector::findLeds(const cv::Mat &image, cv::Rect ROI, const int &thresh
       numPoints++;
     }
   }
-  std::cout << "Detected " << numPoints << " LEDs" << std::endl;
   // These will be used for the visualization
   distorted_detection_centers = distorted_points;
 
