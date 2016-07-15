@@ -46,7 +46,8 @@ include_directories(
 
 # make the node
 add_executable(monocular_pose_estimator
-  src/node.cpp src/monocular_pose_estimator.cpp
+  src/node.cpp
+  src/monocular_pose_estimator.cpp
 )
 add_dependencies(monocular_pose_estimator ${catkin_EXPORTED_TARGETS}  ${PROJECT_NAME}_gencfg)
 
@@ -71,6 +72,20 @@ target_link_libraries(monocular_pose_estimator_cvcamera
    yaml-cpp
    ${catkin_LIBRARIES}
    ${OpenCV_LIBRARIES}
+)
+
+
+
+add_executable(monocular_pose_estimator_usbcam
+  src/node.cpp
+  src/usb_cam.cpp
+  src/monocular_pose_estimator_usbcam.cpp
+)
+
+target_link_libraries(monocular_pose_estimator_usbcam
+   yaml-cpp
+   ${OpenCV_LIBRARIES}
+   ${catkin_LIBRARIES}
 )
 
 # make the nodelet
