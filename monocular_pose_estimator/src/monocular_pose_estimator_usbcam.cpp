@@ -60,7 +60,7 @@ MPENode::MPENode(const ros::NodeHandle& nh, const ros::NodeHandle& nh_private)
   usb_cam::UsbCam::io_method io_method = usb_cam::UsbCam::io_method_from_string("mmap");
   usb_cam::UsbCam::pixel_format pixel_format = usb_cam::UsbCam::pixel_format_from_string("yuyv");
 
-  video_capture_.start("/dev/video1", io_method, pixel_format, 640, 480, 30);
+  video_capture_.start("/dev/video0", io_method, pixel_format, 640, 480, 30);
 
   ROS_WARN("VIDEO CAPTURING STARTED..");
 
