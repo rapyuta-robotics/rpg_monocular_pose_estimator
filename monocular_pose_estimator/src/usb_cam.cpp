@@ -339,8 +339,8 @@ void UsbCam::init_device(int image_width, int image_height, int framerate)
   fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
   fmt.fmt.pix.width = image_width;
   fmt.fmt.pix.height = image_height;
-  fmt.fmt.pix.pixelformat = pixelformat_;
-  fmt.fmt.pix.field = V4L2_FIELD_INTERLACED;
+  fmt.fmt.pix.pixelformat = PIXEL_FORMAT_YUYV;
+  fmt.fmt.pix.field = V4L2_FIELD_ANY;
 
   if (-1 == xioctl(fd_, VIDIOC_S_FMT, &fmt))
     errno_exit("VIDIOC_S_FMT");
@@ -600,21 +600,7 @@ UsbCam::io_method UsbCam::io_method_from_string(const std::string& str)
 
 UsbCam::pixel_format UsbCam::pixel_format_from_string(const std::string& str)
 {
-    if (str == "yuyv")
-      return PIXEL_FORMAT_YUYV;
-    else if (str == "uyvy")
-      return PIXEL_FORMAT_UYVY;
-    else if (str == "mjpeg")
-      return PIXEL_FORMAT_MJPEG;
-    else if (str == "yuvmono10")
-      return PIXEL_FORMAT_YUVMONO10;
-    else if (str == "rgb24")
-      return PIXEL_FORMAT_RGB24;
-    else if (str == "grey")
-      return PIXEL_FORMAT_GREY;
-    else
-      return PIXEL_FORMAT_UNKNOWN;
+    return PIXEL_FORMAT_YUYV;
 }
-
 
 }
