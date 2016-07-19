@@ -308,7 +308,9 @@ void UsbCam::init_device(int image_width, int image_height, int framerate)
   memset(&fmt, 0, sizeof fmt);
 
   fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+  printf("Type: %i", fmt.type);
   fmt.fmt.pix.width = 640;
+  printf("Type: %i", fmt.fmt.pix.width);
   fmt.fmt.pix.height = 480;
   fmt.fmt.pix.pixelformat = PIXEL_FORMAT_YUYV;
   fmt.fmt.pix.field = V4L2_FIELD_ANY;
@@ -379,7 +381,7 @@ void UsbCam::open_device(void)
     exit(EXIT_FAILURE);
   }
 
-  fd_ = open(camera_dev_.c_str(), O_RDWR /* required */| O_NONBLOCK, 0);
+  fd_ = open(camera_dev_.c_str(), O_RDWR);
 
   if (-1 == fd_)
   {
@@ -394,12 +396,12 @@ void UsbCam::start(const std::string& dev, io_method io_method,
 {
   camera_dev_ = dev;
 
-  io_ = io_method;
+  io_ = IO_METHOD_MMAP;
 
   // fill_tab(240);
 
   open_device();
-  init_device(image_width, image_height, framerate);
+  init_device(640, 480, 30);
   start_capturing();
 
   image_ = (camera_image_t *)calloc(1, sizeof(camera_image_t));
@@ -567,14 +569,7 @@ void UsbCam::set_v4l_parameter(const std::string& param, const std::string& valu
 
 UsbCam::io_method UsbCam::io_method_from_string(const std::string& str)
 {
-  if (str == "mmap")
-    return IO_METHOD_MMAP;
-  else if (str == "read")
-    return IO_METHOD_READ;
-  else if (str == "userptr")
-    return IO_METHOD_USERPTR;
-  else
-    return IO_METHOD_UNKNOWN;
+  return IO_METHOD_MMAP;
 }
 
 UsbCam::pixel_format UsbCam::pixel_format_from_string(const std::string& str)
