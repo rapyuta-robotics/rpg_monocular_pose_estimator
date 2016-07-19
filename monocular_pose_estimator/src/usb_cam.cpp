@@ -275,8 +275,6 @@ void UsbCam::init_mmap(void)
 void UsbCam::init_device(int image_width, int image_height, int framerate)
 {
   struct v4l2_capability cap;
-  struct v4l2_cropcap cropcap;
-  struct v4l2_crop crop;
   struct v4l2_format fmt;
   unsigned int min;
 
@@ -307,36 +305,12 @@ void UsbCam::init_device(int image_width, int image_height, int framerate)
 
   /* Select video input, video standard and tune here. */
 
-  CLEAR(cropcap);
-
-  cropcap.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-
-  if (0 == xioctl(fd_, VIDIOC_CROPCAP, &cropcap))
-  {
-    crop.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    crop.c = cropcap.defrect; /* reset to default */
-
-    if (-1 == xioctl(fd_, VIDIOC_S_CROP, &crop))
-    {
-      switch (errno)
-      {
-        case EINVAL:
-          /* Cropping not supported. */
-          break;
-        default:
-          /* Errors ignored. */
-          break;
-      }
-    }
-  }
-  else
-  {
-    /* Errors ignored. */
-  }
-
   CLEAR(fmt);
 
+  memset(&fmt, 0, sizeof fmt);
+
   fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+  // fmt.type = dev->type;
   fmt.fmt.pix.width = 640;
   fmt.fmt.pix.height = 480;
   fmt.fmt.pix.pixelformat = PIXEL_FORMAT_YUYV;
@@ -346,7 +320,7 @@ void UsbCam::init_device(int image_width, int image_height, int framerate)
     std::cout << "Was not able to set VIDIOC_S_FMT" << std::endl;
     errno_exit("VIDIOC_S_FMT");
   }
-  std::cout << "Ok, this didn't work ... " << std::endl;
+  std::cout << "Ok, this worked ... " << std::endl;
 
   /* Note VIDIOC_S_FMT may change width and height. */
 
