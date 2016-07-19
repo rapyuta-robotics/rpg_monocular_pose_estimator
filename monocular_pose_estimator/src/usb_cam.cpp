@@ -275,7 +275,6 @@ void UsbCam::init_mmap(void)
 void UsbCam::init_device(int image_width, int image_height, int framerate)
 {
   struct v4l2_capability cap;
-  struct v4l2_format fmt;
   unsigned int min;
 
   if (-1 == xioctl(fd_, VIDIOC_QUERYCAP, &cap))
@@ -307,16 +306,28 @@ void UsbCam::init_device(int image_width, int image_height, int framerate)
 
   CLEAR(fmt);
 
+  struct v4l2_format fmt;
+
   memset(&fmt, 0, sizeof fmt);
 
   fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-  // fmt.type = dev->type;
   fmt.fmt.pix.width = 640;
   fmt.fmt.pix.height = 480;
   fmt.fmt.pix.pixelformat = PIXEL_FORMAT_YUYV;
   fmt.fmt.pix.field = V4L2_FIELD_ANY;
   std::cout << "WE'RE HERE ... " << std::endl;
-  if (-1 == xioctl(fd_, VIDIOC_S_FMT, &fmt)) {
+
+  ret = ioctl(dev->fd, VIDIOC_S_FMT, &fmt);
+  if (ret < 0) {
+    printf("Unable to set format: %s (%d).\n", strerror(errno),
+      errno);
+    return ret;
+  }
+  printf("Video format set: width: %u height: %u buffer size: %u\n",
+    fmt.fmt.pix.width, fmt.fmt.pix.height, fmt.fmt.pix.sizeimage);
+
+
+  if (-1 == ioctl(fd_, VIDIOC_S_FMT, &fmt)) {
     std::cout << "Was not able to set VIDIOC_S_FMT" << std::endl;
     errno_exit("VIDIOC_S_FMT");
   }
