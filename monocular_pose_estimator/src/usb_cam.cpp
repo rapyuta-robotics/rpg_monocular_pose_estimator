@@ -337,13 +337,16 @@ void UsbCam::init_device(int image_width, int image_height, int framerate)
   CLEAR(fmt);
 
   fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-  fmt.fmt.pix.width = image_width;
-  fmt.fmt.pix.height = image_height;
+  fmt.fmt.pix.width = 640;
+  fmt.fmt.pix.height = 480;
   fmt.fmt.pix.pixelformat = PIXEL_FORMAT_YUYV;
   fmt.fmt.pix.field = V4L2_FIELD_ANY;
-
-  if (-1 == xioctl(fd_, VIDIOC_S_FMT, &fmt))
+  std::cout << "WE'RE HERE ... " << std::endl;
+  if (-1 == xioctl(fd_, VIDIOC_S_FMT, &fmt)) {
+    std::cout << "Was not able to set VIDIOC_S_FMT" << std::endl;
     errno_exit("VIDIOC_S_FMT");
+  }
+  std::cout << "Ok, this didn't work ... " << std::endl;
 
   /* Note VIDIOC_S_FMT may change width and height. */
 
