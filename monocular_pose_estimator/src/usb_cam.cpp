@@ -54,6 +54,8 @@
 #include <chrono>
 #include <iostream>
 
+using namespace std;
+
 #include <monocular_pose_estimator/usb_cam.h>
 
 #define CLEAR(x) memset (&(x), 0, sizeof (x))
@@ -93,11 +95,12 @@ static void yuyv2mono8_threshold(char *RAW, char *MONO, unsigned char threshold,
   // char t = (char)(threshold - 1);
   for (i = 0, j = 0; i < (NumPixels << 1); i += 2, j += 1)
   {
-    const unsigned char pxl = RAW[i];
-    if(pxl > threshold)
-      MONO[j] = pxl;
-    else
-      MONO[j] = 0;
+    // const unsigned char pxl = RAW[i];
+    MONO[j] = RAW[i];
+    // if(pxl > threshold)
+    //   MONO[j] = pxl;
+    // else
+    //   MONO[j] = 0;
   }
 }
 
@@ -114,6 +117,7 @@ UsbCam::~UsbCam()
 void UsbCam::process_image(const void * src, int len, camera_image_t *dest)
 {
   yuyv2mono8_threshold((char*)src, dest->image, 240, dest->width * dest->height);
+  // dest->image = (char *) src;
 }
 
 int UsbCam::read_frame()
@@ -126,7 +130,6 @@ int UsbCam::read_frame()
 
   buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
   buf.memory = V4L2_MEMORY_MMAP;
-
   if (-1 == xioctl(fd_, VIDIOC_DQBUF, &buf))
   {
     switch (errno)
@@ -142,9 +145,10 @@ int UsbCam::read_frame()
         errno_exit("VIDIOC_DQBUF");
     }
   }
-
   assert(buf.index < n_buffers_);
   len = buf.bytesused;
+
+  // this is where most of the time is wasted
   process_image(buffers_[buf.index].start, len, image_);
 
   if (-1 == xioctl(fd_, VIDIOC_QBUF, &buf))
@@ -381,7 +385,7 @@ void UsbCam::open_device(void)
     exit(EXIT_FAILURE);
   }
 
-  fd_ = open(camera_dev_.c_str(), O_RDWR);
+  fd_ = open(camera_dev_.c_str(), O_RDWR | O_NONBLOCK, 0);
 
   if (-1 == fd_)
   {
@@ -408,7 +412,7 @@ void UsbCam::start(const std::string& dev, io_method io_method,
 
   image_->width = image_width;
   image_->height = image_height;
-  image_->bytes_per_pixel = 3;
+  image_->bytes_per_pixel = 1;
 
   image_->image_size = image_->width * image_->height * image_->bytes_per_pixel;
   image_->is_new = 0;

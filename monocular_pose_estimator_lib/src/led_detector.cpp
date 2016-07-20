@@ -28,7 +28,9 @@
 
 #include "monocular_pose_estimator_lib/led_detector.h"
 #include <iostream>
+#include <chrono>
 
+using namespace std;
 namespace monocular_pose_estimator
 {
 
@@ -47,8 +49,10 @@ void LEDDetector::findLeds(const cv::Mat &image, cv::Rect ROI, const int &thresh
   ksize.height = 2;
   std::vector<std::vector<cv::Point>> contours;
 
+
+
   if(ROI.width == 0) {
-    // cv::threshold(image, image, threshold_value, 255, cv::THRESH_TOZERO);
+    cv::threshold(image, image, threshold_value, 255, cv::THRESH_TOZERO);
     cv::blur(image, image, ksize);
  
     #ifdef MPE_SHOW_DEBUG_IMAGE
@@ -59,8 +63,8 @@ void LEDDetector::findLeds(const cv::Mat &image, cv::Rect ROI, const int &thresh
   }
   else {
     cv::Mat region_image;
-    // cv::threshold(image(ROI), region_image, threshold_value, 255, cv::THRESH_TOZERO);
-    cv::blur(image(ROI), region_image, ksize);
+    cv::threshold(image(ROI), region_image, threshold_value, 255, cv::THRESH_TOZERO);
+    cv::blur(region_image, region_image, ksize);
     // GaussianBlur(region_image, region_image, ksize, gaussian_sigma, gaussian_sigma, cv::BORDER_DEFAULT);
     #ifdef MPE_SHOW_DEBUG_IMAGE
     cv::imshow("Gaussian", region_image);
