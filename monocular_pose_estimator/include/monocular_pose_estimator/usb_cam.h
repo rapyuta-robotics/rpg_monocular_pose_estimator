@@ -36,10 +36,9 @@
 #ifndef USB_CAM_USB_CAM_H
 #define USB_CAM_USB_CAM_H
 
-#include <asm/types.h>          /* for videodev2.h */
+#include <asm/types.h> /* for videodev2.h */
 
-extern "C"
-{
+extern "C" {
 #include <linux/videodev2.h>
 }
 
@@ -52,22 +51,28 @@ namespace usb_cam {
 
 class UsbCam {
  public:
-  typedef enum
-  {
-    IO_METHOD_READ, IO_METHOD_MMAP, IO_METHOD_USERPTR, IO_METHOD_UNKNOWN,
+  typedef enum {
+    IO_METHOD_READ,
+    IO_METHOD_MMAP,
+    IO_METHOD_USERPTR,
+    IO_METHOD_UNKNOWN,
   } io_method;
 
-  typedef enum
-  {
-    PIXEL_FORMAT_YUYV, PIXEL_FORMAT_UYVY, PIXEL_FORMAT_MJPEG, PIXEL_FORMAT_YUVMONO10, PIXEL_FORMAT_RGB24, PIXEL_FORMAT_GREY, PIXEL_FORMAT_UNKNOWN
+  typedef enum {
+    PIXEL_FORMAT_YUYV,
+    PIXEL_FORMAT_UYVY,
+    PIXEL_FORMAT_MJPEG,
+    PIXEL_FORMAT_YUVMONO10,
+    PIXEL_FORMAT_RGB24,
+    PIXEL_FORMAT_GREY,
+    PIXEL_FORMAT_UNKNOWN
   } pixel_format;
 
   UsbCam();
   ~UsbCam();
 
   // start camera
-  void start(const std::string& dev, io_method io, pixel_format pf,
-		    int image_width, int image_height, int framerate);
+  void start(const std::string& dev, int image_width, int image_height, int framerate);
   // shutdown camera
   void shutdown(void);
 
@@ -81,35 +86,27 @@ class UsbCam {
   void set_v4l_parameter(const std::string& param, int value);
   void set_v4l_parameter(const std::string& param, const std::string& value);
 
-  static io_method io_method_from_string(const std::string& str);
-  static pixel_format pixel_format_from_string(const std::string& str);
-
-  void stop_capturing(void);
-  void start_capturing(void);
+  void stop_capturing();
+  void start_capturing();
   bool is_capturing();
-  char * get_image_pointer();
+  char* get_image_pointer();
 
  private:
-  typedef struct
-  {
+  typedef struct {
     int width;
     int height;
     int bytes_per_pixel;
     int image_size;
-    char *image;
+    char* image;
     int is_new;
   } camera_image_t;
 
-  struct buffer
-  {
-    void * start;
+  struct buffer {
+    void* start;
     size_t length;
   };
 
-
-  int init_mjpeg_decoder(int image_width, int image_height);
-  void mjpeg2rgb(char *MJPEG, int len, char *RGB, int NumPixels);
-  void process_image(const void * src, int len, camera_image_t *dest);
+  void process_image(const void* src, int len, camera_image_t* dest);
   int read_frame();
   void uninit_device(void);
   void init_read(unsigned int buffer_size);
@@ -121,20 +118,15 @@ class UsbCam {
   void grab_image();
   bool is_capturing_;
 
-
   std::string camera_dev_;
   unsigned int pixelformat_;
-  bool monochrome_;
   io_method io_;
   int fd_;
-  buffer * buffers_;
+  buffer* buffers_;
   unsigned int n_buffers_;
-  struct SwsContext *video_sws_;
-  camera_image_t *image_;
-
+  struct SwsContext* video_sws_;
+  camera_image_t* image_;
 };
-
 }
 
 #endif
-
