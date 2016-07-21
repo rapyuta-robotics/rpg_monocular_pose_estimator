@@ -39,27 +39,31 @@ MPENode::MPENode(const ros::NodeHandle& nh, const ros::NodeHandle& nh_private)
     : nh_(nh), nh_private_(nh_private), have_camera_info_(false) {
   // Set up a dynamic reconfigure server.
   // This should be done before reading parameter server values.
+  
   dynamic_reconfigure::Server<
       monocular_pose_estimator::MonocularPoseEstimatorConfig>::CallbackType cb_;
   cb_ = boost::bind(&MPENode::dynamicParametersCallback, this, _1, _2);
   dr_server_.setCallback(cb_);
 
   // Initialize subscribers
+  std::string video_device_id("/dev/video0");
+  nh_private_.getParam("video_device_id", video_device_id);
 
-  // Import the image from ROS message to OpenCV mat
-  // video_capture_ = cv::VideoCapture(0);  // open the default camera
-  // if (!video_capture_.isOpened()) {
-  //   ROS_WARN("Video Camera could not be opened!");
-  //   ros::shutdown();
-  // }
+  nh_private_.param("camera_brightness", brightness_, -1); //0-255, -1 "leave alone"
+  nh_private_.param("camera_contrast", contrast_, -1); //0-255, -1 "leave alone"
+  nh_private_.param("camera_saturation", saturation_, -1); //0-255, -1 "leave alone"
+  nh_private_.param("camera_sharpness", sharpness_, -1); //0-255, -1 "leave alone"
+  // enable/disable autofocus
+  nh_private_.param("camera_autofocus", autofocus_, false);
+  nh_private_.param("camera_focus", focus_, -1); //0-255, -1 "leave alone"
+  // enable/disable autoexposure
+  nh_private_.param("camera_autoexposure", autoexposure_, true);
+  nh_private_.param("camera_exposure", exposure_, 100);
+  nh_private_.param("camera_gain", gain_, -1); //0-100?, -1 "leave alone"
 
-  ROS_WARN("VIDEO CAPTURING STARTED..");
+  video_capture_.start(video_device_id.c_str(), 640, 480, 30);
 
-
-
-  video_capture_.start("/dev/video1", 640, 480, 30);
-
-  ROS_WARN("VIDEO CAPTURING STARTED..");
+  setCameraParameters();
 
   video_capture_.start_capturing();
 
@@ -105,16 +109,16 @@ MPENode::MPENode(const ros::NodeHandle& nh, const ros::NodeHandle& nh_private)
     ros::shutdown();
   } else {
     std::string camera_name;
-    camera_calibration_parsers::readCalibration(camera_info_url, 
-                                                camera_name,
+    camera_calibration_parsers::readCalibration(camera_info_url, camera_name,
                                                 cam_info_);
     storeCamInfo();
     ROS_INFO("Camera info loaded for %s", camera_name.c_str());
   }
 
   auto rate = ros::Rate(30);
-  while(ros::ok()) {
+  while (ros::ok()) {
     run();
+    ros::spinOnce();
     rate.sleep();
   }
 }
@@ -162,14 +166,14 @@ void MPENode::run() {
     return;
   }
 
-
   // Get time at which the image was taken. This time is used to stamp the
   // estimated pose and also calculate the position of where to search for the
   // makers in the image
   ros::Time time_of_frame = ros::Time::now();
-  
-  //Mat(int _rows, int _cols, int _type, void* _data, size_t _step=AUTO_STEP);
-  cv::Mat image = cv::Mat(480, 640, CV_8U, (void *) video_capture_.get_image_pointer());
+
+  // Mat(int _rows, int _cols, int _type, void* _data, size_t _step=AUTO_STEP);
+  cv::Mat image =
+      cv::Mat(480, 640, CV_8U, (void*) video_capture_.get_image_pointer());
 
   const bool found_body_pose =
       trackable_object_.estimateBodyPose(image, time_of_frame.toSec());
@@ -226,6 +230,45 @@ void MPENode::run() {
   }
 }
 
+void MPENode::setCameraParameters() {
+  // set camera parameters
+  if (brightness_ >= 0)
+    video_capture_.set_v4l_parameter("brightness", brightness_);
+  if (contrast_ >= 0)
+    video_capture_.set_v4l_parameter("contrast", contrast_);
+  if (saturation_ >= 0)
+    video_capture_.set_v4l_parameter("saturation", saturation_);
+  if (sharpness_ >= 0)
+    video_capture_.set_v4l_parameter("sharpness", sharpness_);
+  if (gain_ >= 0)
+    video_capture_.set_v4l_parameter("gain", gain_);
+
+  // check auto white balance
+  // if (auto_white_balance_) {
+  //   video_capture_.set_v4l_parameter("white_balance_temperature_auto", 1);
+  // } else {
+  //   video_capture_.set_v4l_parameter("white_balance_temperature_auto", 0);
+  //   video_capture_.set_v4l_parameter("white_balance_temperature", white_balance_);
+  // }
+
+  // check auto exposure
+  if (!autoexposure_) {
+    // turn down exposure control (from max of 3)
+    video_capture_.set_v4l_parameter("exposure_auto", 1);
+    video_capture_.set_v4l_parameter("exposure_absolute", exposure_);
+  }
+
+  // check auto focus
+  if (autofocus_) {
+    video_capture_.set_auto_focus(1);
+    video_capture_.set_v4l_parameter("focus_auto", 1);
+  } else {
+    video_capture_.set_v4l_parameter("focus_auto", 0);
+    if (focus_ >= 0)
+      video_capture_.set_v4l_parameter("focus_absolute", focus_);
+  }
+}
+
 /**
  * The dynamic reconfigure callback function. This function updates the variable
  * within the program whenever they are changed using dynamic reconfigure.
@@ -233,6 +276,7 @@ void MPENode::run() {
 void MPENode::dynamicParametersCallback(
     monocular_pose_estimator::MonocularPoseEstimatorConfig& config,
     uint32_t level) {
+  ROS_WARN("CHANGING PARAMETERS!");
   trackable_object_.detection_threshold_value_ = config.threshold_value;
   trackable_object_.gaussian_sigma_ = config.gaussian_sigma;
   trackable_object_.min_blob_area_ = config.min_blob_area;
@@ -249,6 +293,19 @@ void MPENode::dynamicParametersCallback(
   trackable_object_.setCertaintyThreshold(config.certainty_threshold);
   trackable_object_.setValidCorrespondenceThreshold(
       config.valid_correspondence_threshold);
+
+  brightness_ = config.camera_brightness;
+  contrast_ = config.camera_contrast;
+  saturation_ = config.camera_saturation;
+  sharpness_ = config.camera_sharpness;
+  focus_ = config.camera_focus;
+  exposure_ = config.camera_exposure;
+  gain_ = config.camera_gain;
+
+  autofocus_ = config.camera_autofocus;
+  autoexposure_ = config.camera_autoexposure;
+
+  setCameraParameters();
 
   ROS_INFO("Parameters changed");
 }

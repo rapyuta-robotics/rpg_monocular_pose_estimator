@@ -59,44 +59,36 @@ List4DPoints PoseEstimator::getMarkerPositions()
   return object_points_;
 }
 
-bool PoseEstimator::estimateBodyPose(cv::Mat image, double time_to_predict)
-{
+bool PoseEstimator::estimateBodyPose(cv::Mat image, double time_to_predict) {
   pose_updated_ = false;
   // Set up pixel positions list
   List2DPoints detected_led_positions;
 
-  if (it_since_initialized_ < 1)  // If not yet initialised, search the whole image for the points
-  {
+  // If not yet initialised, search the whole image for the points
+  if (it_since_initialized_ < 1) {
     setPredictedTime(time_to_predict);
 
     region_of_interest_ = cv::Rect(0, 0, image.cols, image.rows);
 
     // Do detection of LEDs in image
-    LEDDetector::findLeds(image, region_of_interest_, detection_threshold_value_, gaussian_sigma_, min_blob_area_,
-                          max_blob_area_, max_width_height_distortion_, max_circular_distortion_,
-                          detected_led_positions, distorted_detection_centers_, camera_matrix_K_,
-                          camera_distortion_coeffs_);
-    
-    std::cout << "detected_led_positions.size() = " << detected_led_positions.size() << std::endl;
-    if (detected_led_positions.size() >= min_num_leds_detected_) // If found enough LEDs, Reinitialise
-    {
-      // Reinitialise
-//      ROS_WARN("Initialising using brute-force correspondence search.");
+    LEDDetector::findLeds(
+        image, region_of_interest_, detection_threshold_value_, gaussian_sigma_,
+        min_blob_area_, max_blob_area_, max_width_height_distortion_,
+        max_circular_distortion_, detected_led_positions,
+        distorted_detection_centers_, camera_matrix_K_,
+        camera_distortion_coeffs_);
 
+    // If found enough LEDs, Reinitialise
+    if (detected_led_positions.size() >= min_num_leds_detected_) {
       setImagePoints(detected_led_positions);
 
-      if (initialise() == 1)
-      {
+      if (initialise() == 1) {
         optimiseAndUpdatePose(time_to_predict);
       }
     }
-    else
-    { // Too few LEDs found
-    }
+    // Too few LEDs found ... 
 
-  }
-  else
-  { // If initialised
+  } else {  // If initialised
 
     predictWithROI(time_to_predict, image);
 
@@ -109,36 +101,35 @@ bool PoseEstimator::estimateBodyPose(cv::Mat image, double time_to_predict)
     bool repeat_check = true;
     unsigned num_loops = 0;
 
-    do
-    {
+    do {
       num_loops++;
-      if (detected_led_positions.size() >= min_num_leds_detected_) // If enough LEDs detected
+      if (detected_led_positions.size() >=
+          min_num_leds_detected_)  // If enough LEDs detected
       {
         setImagePoints(detected_led_positions);
         findCorrespondencesAndPredictPose(time_to_predict);
         repeat_check = false;
       }
-      else
-      { // If too few LEDS detected
-        if (num_loops < 2)
-        { // If haven't searched image yet, search image
-
-//          ROS_WARN("Too few LEDs detected in ROI. Searching whole image. Num LEDs detected: %d.", (int)detected_led_positions.size());
-
+      // If too few LEDS detected
+      else {
+        // If haven't searched image yet, search image
+        if (num_loops < 2) {
           // Search whole image
           region_of_interest_ = cv::Rect(0, 0, image.cols, image.rows);
 
           // Do detection of LEDs in image
-          LEDDetector::findLeds(image, region_of_interest_, detection_threshold_value_, gaussian_sigma_, min_blob_area_,
-                                max_blob_area_, max_width_height_distortion_, max_circular_distortion_,
-                                detected_led_positions, distorted_detection_centers_, camera_matrix_K_,
-                                camera_distortion_coeffs_);
-
-        }
-        else
-        { // If already searched image continue
+          LEDDetector::findLeds(
+              image, region_of_interest_, detection_threshold_value_,
+              gaussian_sigma_, min_blob_area_, max_blob_area_,
+              max_width_height_distortion_, max_circular_distortion_,
+              detected_led_positions, distorted_detection_centers_,
+              camera_matrix_K_, camera_distortion_coeffs_);
+        } 
+        // If already searched image continue
+        else {  
           repeat_check = false;
-//          ROS_WARN("Too few LEDs detected. Num LEDs detected: %d.", (int)detected_led_positions.size());
+          //          ROS_WARN("Too few LEDs detected. Num LEDs detected: %d.",
+          //          (int)detected_led_positions.size());
         }
       }
     } while (repeat_check);
@@ -147,88 +138,63 @@ bool PoseEstimator::estimateBodyPose(cv::Mat image, double time_to_predict)
   return pose_updated_;
 }
 
-void PoseEstimator::setPredictedPose(const Eigen::Matrix4d & pose, double time)
-{
+void PoseEstimator::setPredictedPose(const Eigen::Matrix4d& pose, double time) {
   predicted_pose_ = pose;
   predicted_time_ = time;
-
 }
 
-Eigen::Matrix4d PoseEstimator::getPredictedPose()
-{
-  return predicted_pose_;
-}
+Eigen::Matrix4d PoseEstimator::getPredictedPose() { return predicted_pose_; }
 
-Matrix6d PoseEstimator::getPoseCovariance()
-{
-  return pose_covariance_;
-}
+Matrix6d PoseEstimator::getPoseCovariance() { return pose_covariance_; }
 
-void PoseEstimator::setImagePoints(List2DPoints points)
-{
+void PoseEstimator::setImagePoints(List2DPoints points) {
   image_points_ = points;
   PoseEstimator::calculateImageVectors();
 }
 
-void PoseEstimator::setPredictedPixels(List2DPoints points)
-{
+void PoseEstimator::setPredictedPixels(List2DPoints points) {
   predicted_pixel_positions_ = points;
 }
 
-List2DPoints PoseEstimator::getPredictedPixelPositions()
-{
+List2DPoints PoseEstimator::getPredictedPixelPositions() {
   return predicted_pixel_positions_;
 }
 
-void PoseEstimator::setBackProjectionPixelTolerance(double tolerance)
-{
+void PoseEstimator::setBackProjectionPixelTolerance(double tolerance) {
   back_projection_pixel_tolerance_ = tolerance;
 }
 
-double PoseEstimator::getBackProjectionPixelTolerance()
-{
+double PoseEstimator::getBackProjectionPixelTolerance() {
   return back_projection_pixel_tolerance_;
 }
 
-void PoseEstimator::setNearestNeighbourPixelTolerance(double tolerance)
-{
+void PoseEstimator::setNearestNeighbourPixelTolerance(double tolerance) {
   nearest_neighbour_pixel_tolerance_ = tolerance;
 }
 
-double PoseEstimator::getNearestNeighbourPixelTolerance()
-{
+double PoseEstimator::getNearestNeighbourPixelTolerance() {
   return nearest_neighbour_pixel_tolerance_;
 }
 
-void PoseEstimator::setCertaintyThreshold(double threshold)
-{
+void PoseEstimator::setCertaintyThreshold(double threshold) {
   certainty_threshold_ = threshold;
 }
 
-double PoseEstimator::getCertaintyThreshold()
-{
-  return certainty_threshold_;
-}
+double PoseEstimator::getCertaintyThreshold() { return certainty_threshold_; }
 
-void PoseEstimator::setValidCorrespondenceThreshold(double threshold)
-{
+void PoseEstimator::setValidCorrespondenceThreshold(double threshold) {
   valid_correspondence_threshold_ = threshold;
 }
 
-double PoseEstimator::getValidCorrespondenceThreshold()
-{
+double PoseEstimator::getValidCorrespondenceThreshold() {
   return valid_correspondence_threshold_;
 }
 
-void PoseEstimator::setHistogramThreshold(unsigned threshold)
-{
+void PoseEstimator::setHistogramThreshold(unsigned threshold) {
   histogram_threshold_ = threshold;
 }
 
-unsigned PoseEstimator::getHistogramThreshold()
-{
-  return histogram_threshold_;
-}
+unsigned PoseEstimator::getHistogramThreshold() { return histogram_threshold_; }
 
 void PoseEstimator::predictPose(double time_to_predict)
 {

@@ -81,6 +81,20 @@ private:
 
   PoseEstimator trackable_object_; //!< Declaration of the object whose pose will be estimated
 
+  // camera variables
+  int brightness_, 
+      contrast_,
+      saturation_,
+      sharpness_,
+      focus_,
+      exposure_,
+      gain_;
+
+  bool autofocus_,
+       autoexposure_;
+
+  void setCameraParameters();
+  
 public:
 
   MPENode(const ros::NodeHandle& nh, const ros::NodeHandle& nh_private);
