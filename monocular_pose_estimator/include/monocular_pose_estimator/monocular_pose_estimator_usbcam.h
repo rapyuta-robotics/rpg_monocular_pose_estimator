@@ -67,9 +67,6 @@ private:
   image_transport::Publisher image_pub_; //!< The ROS image publisher that publishes the visualisation image
   ros::Publisher pose_pub_; //!< The ROS publisher that publishes the estimated pose.
 
-  // ros::Subscriber image_sub_; //!< The ROS subscriber to the raw camera image
-  // ros::Subscriber camera_info_sub_; //!< The ROS subscriber to the camera info
-
   usb_cam::UsbCam video_capture_; //!< OpenCV video capture device
 
   dynamic_reconfigure::Server<monocular_pose_estimator::MonocularPoseEstimatorConfig> dr_server_; //!< The dynamic reconfigure server

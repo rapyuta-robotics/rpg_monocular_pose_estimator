@@ -18,6 +18,7 @@
  *
  * Created on: Jul 29, 2013
  * Author: Karl Schwabe
+ *         Wolf Vollprecht <wolf.vollprecht@rapyuta-robotics.com>
  */
 
 /** \file monocular_pose_estimator_node.cpp
@@ -49,17 +50,19 @@ MPENode::MPENode(const ros::NodeHandle& nh, const ros::NodeHandle& nh_private)
   std::string video_device_id("/dev/video0");
   nh_private_.getParam("video_device_id", video_device_id);
 
-  nh_private_.param("camera_brightness", brightness_, -1); //0-255, -1 "leave alone"
-  nh_private_.param("camera_contrast", contrast_, -1); //0-255, -1 "leave alone"
-  nh_private_.param("camera_saturation", saturation_, -1); //0-255, -1 "leave alone"
-  nh_private_.param("camera_sharpness", sharpness_, -1); //0-255, -1 "leave alone"
+  nh_private_.param("camera_brightness", brightness_, -1); // 0-255, -1 "leave alone"
+  nh_private_.param("camera_contrast", contrast_, -1); // 0-255, -1 "leave alone"
+  nh_private_.param("camera_saturation", saturation_, -1); // 0-255, -1 "leave alone"
+  nh_private_.param("camera_sharpness", sharpness_, -1); // 0-255, -1 "leave alone"
+  
   // enable/disable autofocus
   nh_private_.param("camera_autofocus", autofocus_, false);
-  nh_private_.param("camera_focus", focus_, -1); //0-255, -1 "leave alone"
+  nh_private_.param("camera_focus", focus_, -1); // 0-255, -1 "leave alone"
+  
   // enable/disable autoexposure
-  nh_private_.param("camera_autoexposure", autoexposure_, true);
+  nh_private_.param("camera_autoexposure", autoexposure_, false);
   nh_private_.param("camera_exposure", exposure_, 100);
-  nh_private_.param("camera_gain", gain_, -1); //0-100?, -1 "leave alone"
+  nh_private_.param("camera_gain", gain_, -1); // 0-100?, -1 "leave alone"
 
   video_capture_.start(video_device_id.c_str(), 640, 480, 30);
 

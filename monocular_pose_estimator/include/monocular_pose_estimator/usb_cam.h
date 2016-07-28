@@ -1,3 +1,7 @@
+// This is a modified version of usb_cam, the classic ROS usb cam driver. 
+// It is tuned to provide a black-and-white image from a YUYV capable USB cam.
+// Modified by Wolf Vollprecht <wolf.vollprecht@rapyuta-robotics.com 
+
 /*********************************************************************
  *
  * Software License Agreement (BSD License)
@@ -51,23 +55,6 @@ namespace usb_cam {
 
 class UsbCam {
  public:
-  typedef enum {
-    IO_METHOD_READ,
-    IO_METHOD_MMAP,
-    IO_METHOD_USERPTR,
-    IO_METHOD_UNKNOWN,
-  } io_method;
-
-  typedef enum {
-    PIXEL_FORMAT_YUYV,
-    PIXEL_FORMAT_UYVY,
-    PIXEL_FORMAT_MJPEG,
-    PIXEL_FORMAT_YUVMONO10,
-    PIXEL_FORMAT_RGB24,
-    PIXEL_FORMAT_GREY,
-    PIXEL_FORMAT_UNKNOWN
-  } pixel_format;
-
   UsbCam();
   ~UsbCam();
 
@@ -119,8 +106,6 @@ class UsbCam {
   bool is_capturing_;
 
   std::string camera_dev_;
-  unsigned int pixelformat_;
-  io_method io_;
   int fd_;
   buffer* buffers_;
   unsigned int n_buffers_;

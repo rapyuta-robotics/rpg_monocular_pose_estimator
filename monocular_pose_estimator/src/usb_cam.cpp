@@ -33,6 +33,8 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *
  *********************************************************************/
+#include "monocular_pose_estimator/usb_cam.h"
+
 #define __STDC_CONSTANT_MACROS
 #include <stdio.h>
 #include <stdlib.h>
@@ -47,16 +49,10 @@
 #include <sys/time.h>
 #include <sys/mman.h>
 #include <sys/ioctl.h>
-#include <ros/ros.h>
 #include <boost/lexical_cast.hpp>
+
+#include <ros/ros.h>
 #include <sensor_msgs/fill_image.h>
-
-#include <chrono>
-#include <iostream>
-
-using namespace std;
-
-#include <monocular_pose_estimator/usb_cam.h>
 
 #define CLEAR(x) memset(&(x), 0, sizeof(x))
 
@@ -85,8 +81,7 @@ static void yuyv2mono8(char* RAW, char* MONO, int NumPixels) {
 }
 
 UsbCam::UsbCam()
-    : io_(IO_METHOD_MMAP),
-      fd_(-1),
+    : fd_(-1),
       buffers_(NULL),
       n_buffers_(0),
       video_sws_(NULL),
@@ -134,7 +129,7 @@ int UsbCam::read_frame() {
 
 bool UsbCam::is_capturing() { return is_capturing_; }
 
-void UsbCam::stop_capturing(void) {
+void UsbCam::stop_capturing() {
   if (!is_capturing_) return;
 
   is_capturing_ = false;
@@ -146,7 +141,7 @@ void UsbCam::stop_capturing(void) {
     errno_exit("VIDIOC_STREAMOFF");
 }
 
-void UsbCam::start_capturing(void) {
+void UsbCam::start_capturing() {
   if (is_capturing_) return;
 
   unsigned int i;
@@ -173,7 +168,7 @@ void UsbCam::start_capturing(void) {
   is_capturing_ = true;
 }
 
-void UsbCam::uninit_device(void) {
+void UsbCam::uninit_device() {
   unsigned int i;
 
   for (i = 0; i < n_buffers_; ++i)
@@ -183,7 +178,7 @@ void UsbCam::uninit_device(void) {
   free(buffers_);
 }
 
-void UsbCam::init_mmap(void) {
+void UsbCam::init_mmap() {
   struct v4l2_requestbuffers req;
 
   CLEAR(req);
@@ -236,6 +231,8 @@ void UsbCam::init_mmap(void) {
 
 void UsbCam::init_device(int image_width, int image_height, int framerate) {
   struct v4l2_capability cap;
+  struct v4l2_format fmt;
+
   unsigned int min;
 
   if (-1 == xioctl(fd_, VIDIOC_QUERYCAP, &cap)) {
@@ -258,25 +255,17 @@ void UsbCam::init_device(int image_width, int image_height, int framerate) {
   }
 
   /* Select video input, video standard and tune here. */
-  struct v4l2_format fmt;
-  memset(&fmt, 0, sizeof fmt);
+
+  CLEAR(fmt);
 
   fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-  fmt.fmt.pix.width = 640;
-  fmt.fmt.pix.height = 480;
+  fmt.fmt.pix.width = image_width;
+  fmt.fmt.pix.height = image_height;
   fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_YUYV;
   fmt.fmt.pix.field = V4L2_FIELD_ANY;
 
-  int ret = ioctl(fd_, VIDIOC_S_FMT, &fmt);
-  if (ret < 0) {
-    printf("Unable to set format: %s (%d).\n", strerror(errno), errno);
-  }
-  printf("Video format set: width: %u height: %u buffer size: %u\n",
-         fmt.fmt.pix.width, fmt.fmt.pix.height, fmt.fmt.pix.sizeimage);
-
-  std::cout << "Ok, this worked ... " << std::endl;
-
-  /* Note VIDIOC_S_FMT may change width and height. */
+  if (xioctl(fd_, VIDIOC_S_FMT, &fmt) < 0)
+    errno_exit("Couldn't set VIDIOC_S_FMT!");
 
   image_width = fmt.fmt.pix.width;
   image_height = fmt.fmt.pix.height;
@@ -299,13 +288,13 @@ void UsbCam::init_device(int image_width, int image_height, int framerate) {
   init_mmap();
 }
 
-void UsbCam::close_device(void) {
+void UsbCam::close_device() {
   if (-1 == close(fd_)) errno_exit("close");
 
   fd_ = -1;
 }
 
-void UsbCam::open_device(void) {
+void UsbCam::open_device() {
   struct stat st;
 
   if (-1 == stat(camera_dev_.c_str(), &st)) {
@@ -332,12 +321,10 @@ void UsbCam::start(const std::string& dev, int image_width,
                    int image_height, int framerate) {
   camera_dev_ = dev;
 
-  io_ = IO_METHOD_MMAP;
-
   // fill_tab(240);
 
   open_device();
-  init_device(640, 480, 30);
+  init_device(image_width, image_height, framerate);
   start_capturing();
 
   image_ = (camera_image_t*)calloc(1, sizeof(camera_image_t));
@@ -352,7 +339,7 @@ void UsbCam::start(const std::string& dev, int image_width,
   memset(image_->image, 0, image_->image_size * sizeof(char));
 }
 
-void UsbCam::shutdown(void) {
+void UsbCam::shutdown() {
   stop_capturing();
   uninit_device();
   close_device();
@@ -372,7 +359,6 @@ void UsbCam::grab_image(sensor_msgs::Image* msg) {
 }
 
 char* UsbCam::get_image_pointer() {
-  // grab the image
   grab_image();
   return image_->image;
 }
@@ -385,7 +371,7 @@ void UsbCam::grab_image() {
   FD_ZERO(&fds);
   FD_SET(fd_, &fds);
 
-  /* Timeout. */
+  // timeout
   tv.tv_sec = 5;
   tv.tv_usec = 0;
 

@@ -1,7 +1,7 @@
 <launch> 
 
 	<!-- Name of the YAML file containing the marker positions -->
-	<arg name="YAML_file_name" default="pattern_artificial"/>
+	<arg name="YAML_file_name" default="pattern_very_small"/>
 
 	<!-- File containing the the marker positions in the trackable's frame of reference -->
 	<arg name="marker_positions_file" default="$(find monocular_pose_estimator)/marker_positions/$(arg YAML_file_name).yaml"/> 
@@ -12,10 +12,13 @@
 			<rosparam command="load" file="$(arg marker_positions_file)"/>
 
 			<param name="threshold_value" value="120" />
-			<param name="video_device_id" value="/dev/video1" />
+			<param name="video_device_id" value="/dev/video2" />
 			<param name="camera_info_url" value="/home/wolfv/.ros/camera_info/head_camera.yaml" />
 
-			<param name="camera_brightness" value="200" />
+			<!-- <param name="camera_brightness" value="200" /> -->
+			<param name="camera_autoexposure" value="false" />
+			<param name="camera_contrast" value="10" />
+			<param name="camera_exposure" value="1" />
 
 			<param name="min_blob_area" value="10" />
 			<param name="max_blob_area" value="200" />

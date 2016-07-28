@@ -59,17 +59,19 @@ void LEDDetector::findLeds(const cv::Mat &image, cv::Rect ROI, const int &thresh
     cv::imshow("Gaussian", image);
     cv::waitKey(30); 
     #endif
+    
     cv::findContours(image, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
   }
   else {
     cv::Mat region_image;
     cv::threshold(image(ROI), region_image, threshold_value, 255, cv::THRESH_TOZERO);
     cv::blur(region_image, region_image, ksize);
-    // GaussianBlur(region_image, region_image, ksize, gaussian_sigma, gaussian_sigma, cv::BORDER_DEFAULT);
+
     #ifdef MPE_SHOW_DEBUG_IMAGE
     cv::imshow("Gaussian", region_image);
     cv::waitKey(30);
     #endif
+
     cv::findContours(region_image, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
   }
 
