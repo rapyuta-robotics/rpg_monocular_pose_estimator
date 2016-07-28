@@ -95,13 +95,13 @@ class UsbCam {
 
   void process_image(const void* src, int len, camera_image_t* dest);
   int read_frame();
-  void uninit_device(void);
+  void uninit_device();
   void init_read(unsigned int buffer_size);
-  void init_mmap(void);
+  void init_mmap();
   void init_userp(unsigned int buffer_size);
   void init_device(int image_width, int image_height, int framerate);
-  void close_device(void);
-  void open_device(void);
+  void close_device();
+  void open_device();
   void grab_image();
   bool is_capturing_;
 
