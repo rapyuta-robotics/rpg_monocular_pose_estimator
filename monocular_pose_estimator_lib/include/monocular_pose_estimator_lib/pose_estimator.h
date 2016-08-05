@@ -83,7 +83,7 @@ public:
   std::vector<double> camera_distortion_coeffs_; //!< Variable to store the camera distortion parameters
 
   int detection_threshold_value_; //!< The current threshold value for the image for LED detection
-  double gaussian_sigma_; //!< The current standard deviation of the Gaussian that will be applied to the thresholded image for LED detection
+  double blur_size_; //!< The kernel size of the box blur that will be applied to the thresholded image for LED detection
   double min_blob_area_; //!< The the minimum blob area (in pixels squared) that will be detected as a blob/LED. Areas having an area smaller than this will not be detected as LEDs.
   double max_blob_area_; //!< The the maximum blob area (in pixels squared) that will be detected as a blob/LED. Areas having an area larger than this will not be detected as LEDs.
   double max_width_height_distortion_; //!< This is a parameter related to the circular distortion of the detected blobs. It is the maximum allowable distortion of a bounding box around the detected blob calculated as the ratio of the width to the height of the bounding rectangle. Ideally the ratio of the width to the height of the bounding rectangle should be 1.
@@ -338,7 +338,7 @@ public:
    */
   PoseEstimator();
 
-  void augmentImage(cv::Mat &image);
+  void augmentImage(cv::Mat &image, bool found_pose = true);
 
   /**
    * Sets the positions of the markers on the object.

@@ -41,10 +41,13 @@ PoseEstimator::PoseEstimator()
   it_since_initialized_ = 0;
 }
 
-void PoseEstimator::augmentImage(cv::Mat &image)
+void PoseEstimator::augmentImage(cv::Mat &image, bool found_pose)
 {
-  Visualization::createVisualizationImage(image, predicted_pose_, camera_matrix_K_, camera_distortion_coeffs_,
+  if (found_pose)
+    Visualization::createVisualizationImage(image, predicted_pose_, camera_matrix_K_, camera_distortion_coeffs_,
                                           region_of_interest_, distorted_detection_centers_);
+  else
+    Visualization::createVisualizationImage(image, region_of_interest_, distorted_detection_centers_);
 }
 
 void PoseEstimator::setMarkerPositions(List4DPoints positions_of_markers_on_object)
@@ -72,7 +75,7 @@ bool PoseEstimator::estimateBodyPose(cv::Mat image, double time_to_predict) {
 
     // Do detection of LEDs in image
     LEDDetector::findLeds(
-        image, region_of_interest_, detection_threshold_value_, gaussian_sigma_,
+        image, region_of_interest_, detection_threshold_value_, blur_size_,
         min_blob_area_, max_blob_area_, max_width_height_distortion_,
         max_circular_distortion_, detected_led_positions,
         distorted_detection_centers_, camera_matrix_K_,
@@ -93,7 +96,7 @@ bool PoseEstimator::estimateBodyPose(cv::Mat image, double time_to_predict) {
     predictWithROI(time_to_predict, image);
 
     // Search image within ROI
-    LEDDetector::findLeds(image, region_of_interest_, detection_threshold_value_, gaussian_sigma_, min_blob_area_,
+    LEDDetector::findLeds(image, region_of_interest_, detection_threshold_value_, blur_size_, min_blob_area_,
                           max_blob_area_, max_width_height_distortion_, max_circular_distortion_,
                           detected_led_positions, distorted_detection_centers_, camera_matrix_K_,
                           camera_distortion_coeffs_);
@@ -120,7 +123,7 @@ bool PoseEstimator::estimateBodyPose(cv::Mat image, double time_to_predict) {
           // Do detection of LEDs in image
           LEDDetector::findLeds(
               image, region_of_interest_, detection_threshold_value_,
-              gaussian_sigma_, min_blob_area_, max_blob_area_,
+              blur_size_, min_blob_area_, max_blob_area_,
               max_width_height_distortion_, max_circular_distortion_,
               detected_led_positions, distorted_detection_centers_,
               camera_matrix_K_, camera_distortion_coeffs_);

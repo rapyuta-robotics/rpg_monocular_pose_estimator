@@ -18,6 +18,7 @@
  *
  * Created on: July 29, 2013
  * Author: Karl Schwabe
+ *         Wolf Vollprecht <wolf.vollprecht@rapyuta-robotics.com>
  */
 
 /**
@@ -35,23 +36,19 @@ namespace monocular_pose_estimator
 {
 
 // LED detector
-void LEDDetector::findLeds(const cv::Mat &image, cv::Rect ROI, const int &threshold_value, const double &gaussian_sigma,
+void LEDDetector::findLeds(const cv::Mat &image, cv::Rect ROI, const int &threshold_value, const double &blur_size,
                            const double &min_blob_area, const double &max_blob_area,
                            const double &max_width_height_distortion, const double &max_circular_distortion,
                            List2DPoints &pixel_positions, std::vector<cv::Point2f> &distorted_detection_centers,
                            const cv::Mat &camera_matrix_K, const std::vector<double> &camera_distortion_coeffs)
 {
-  // Threshold the image
-  //cv::threshold(image, bwImage, threshold_value, 255, cv::THRESH_BINARY);
 
-  cv::Size ksize; // Gaussian kernel size. If equal to zero, then the kerenl size is computed from the sigma
+  cv::Size ksize; // Box blur kernel size.
   ksize.width = 2;
   ksize.height = 2;
   std::vector<std::vector<cv::Point>> contours;
 
-
-
-  if(ROI.width == 0) {
+  if (ROI.width == 0) {
     cv::threshold(image, image, threshold_value, 255, cv::THRESH_TOZERO);
     cv::blur(image, image, ksize);
  
@@ -61,7 +58,7 @@ void LEDDetector::findLeds(const cv::Mat &image, cv::Rect ROI, const int &thresh
     #endif
     
     cv::findContours(image, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
-  }
+  } 
   else {
     cv::Mat region_image;
     cv::threshold(image(ROI), region_image, threshold_value, 255, cv::THRESH_TOZERO);

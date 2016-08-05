@@ -118,11 +118,17 @@ MPENode::MPENode(const ros::NodeHandle& nh, const ros::NodeHandle& nh_private)
     ROS_INFO("Camera info loaded for %s", camera_name.c_str());
   }
 
-  auto rate = ros::Rate(30);
+  int param_setter_tick = 250;
+  ros::Rate rate(30);
   while (ros::ok()) {
     run();
     ros::spinOnce();
     rate.sleep();
+    if(param_setter_tick == 300) {
+      this->setCameraParameters();
+      param_setter_tick = 0;
+    }
+    param_setter_tick++;
   }
 }
 
@@ -220,9 +226,7 @@ void MPENode::run() {
   if (image_pub_.getNumSubscribers() > 0) {
     cv::Mat visualized_image = image.clone();
     cv::cvtColor(visualized_image, visualized_image, CV_GRAY2RGB);
-    if (found_body_pose) {
-      trackable_object_.augmentImage(visualized_image);
-    }
+    trackable_object_.augmentImage(visualized_image, found_body_pose);
 
     // Publish image for visualization
     cv_bridge::CvImage visualized_image_msg;
@@ -281,7 +285,7 @@ void MPENode::dynamicParametersCallback(
     uint32_t level) {
   ROS_WARN("CHANGING PARAMETERS!");
   trackable_object_.detection_threshold_value_ = config.threshold_value;
-  trackable_object_.gaussian_sigma_ = config.gaussian_sigma;
+  trackable_object_.blur_size_ = config.blur_size;
   trackable_object_.min_blob_area_ = config.min_blob_area;
   trackable_object_.max_blob_area_ = config.max_blob_area;
   trackable_object_.max_width_height_distortion_ =

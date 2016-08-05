@@ -50,7 +50,7 @@ public:
    * \f]
    *
    *
-   * Thereafter the image is Gaussian smoothed. Contours are extracted and their areas are determined. Blobs with
+   * Thereafter the image is smoothed with a box blur. Contours are extracted and their areas are determined. Blobs with
    * too large, or too small an area are ignored. Blobs that are not sufficiently round are also ignored.
    *
    * The centre of the extracted blobs is calculated using the method of moments. The centre \f$(\hat{u}, \hat{v})\f$ is calculated as \n
@@ -67,7 +67,7 @@ public:
    * \param image the image in which the LEDs are to be detected
    * \param ROI the region of interest in the image to which the image search will be confined
    * \param threshold_value the threshold value for the LED detection
-   * \param gaussian_sigma standard deviation \f$\sigma\f$ of the Gaussian that is to be applied to the thresholded image
+   * \param blur_size size of the box blur
    * \param min_blob_area the minimum blob area to be detected (in pixels squared)
    * \param max_blob_area the maximum blob area to be detected (in pixels squared)
    * \param max_width_height_distortion the maximum distortion ratio of the width of the blob to the height of the blob. Calculated as \f$1-\frac{\mbox{width}}{\mbox{height}}\f$
@@ -81,7 +81,7 @@ public:
    * \param camera_distortion_coeffs the vector containing the 4, 5 or 8 distortion coefficients of the camera \f$ (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) \f$
    *
    */
-  static void findLeds(const cv::Mat &image, cv::Rect ROI, const int &threshold_value, const double &gaussian_sigma,
+  static void findLeds(const cv::Mat &image, cv::Rect ROI, const int &threshold_value, const double &blur_size,
                        const double &min_blob_area, const double &max_blob_area,
                        const double &max_width_height_distortion, const double &max_circular_distortion,
                        List2DPoints &pixel_positions, std::vector<cv::Point2f> &distorted_detection_centers,

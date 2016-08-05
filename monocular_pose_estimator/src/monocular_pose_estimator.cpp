@@ -249,7 +249,7 @@ void MPENode::imageCallback(const sensor_msgs::Image::ConstPtr& image_msg)
 void MPENode::dynamicParametersCallback(monocular_pose_estimator::MonocularPoseEstimatorConfig &config, uint32_t level)
 {
   trackable_object_.detection_threshold_value_ = config.threshold_value;
-  trackable_object_.gaussian_sigma_ = config.gaussian_sigma;
+  trackable_object_.blur_size_ = config.blur_size;
   trackable_object_.min_blob_area_ = config.min_blob_area;
   trackable_object_.max_blob_area_ = config.max_blob_area;
   trackable_object_.max_width_height_distortion_ = config.max_width_height_distortion;

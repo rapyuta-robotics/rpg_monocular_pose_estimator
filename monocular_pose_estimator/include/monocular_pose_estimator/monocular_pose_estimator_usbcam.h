@@ -43,9 +43,6 @@
 #include <camera_calibration_parsers/parse.h>
 #include <cv_bridge/cv_bridge.h>
 #include <opencv/cvwimage.h>
-#include <opencv/highgui.h>
-
-
 
 #include <dynamic_reconfigure/server.h>
 #include <monocular_pose_estimator/MonocularPoseEstimatorConfig.h>
