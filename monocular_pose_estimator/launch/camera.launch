@@ -1,7 +1,7 @@
 <launch> 
 
 	<!-- Name of the YAML file containing the marker positions -->
-	<arg name="YAML_file_name" default="pattern_artificial_3d_4_2"/>
+	<arg name="YAML_file_name" default="pattern_screws"/>
 
 	<!-- File containing the the marker positions in the trackable's frame of reference -->
 	<arg name="marker_positions_file" default="$(find monocular_pose_estimator)/marker_positions/$(arg YAML_file_name).yaml"/> 
