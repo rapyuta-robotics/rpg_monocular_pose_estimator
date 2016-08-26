@@ -200,12 +200,13 @@ void MPENode::run() {
     // Convert transform to PoseWithCovarianceStamped message
     // This position is converted to NED
     predicted_pose_.header.stamp = time_of_frame;
-    predicted_pose_.pose.pose.position.y = transform(0, 3);
-    predicted_pose_.pose.pose.position.x = transform(1, 3);
-    predicted_pose_.pose.pose.position.z = -transform(2, 3);
-    auto ned_quat = Eigen::Quaterniond(0.0, std::sqrt(2) / 2.0, std::sqrt(2) / 2.0, 0.0);
-    Eigen::Quaterniond orientation = ned_quat *
-        Eigen::Quaterniond(transform.block<3, 3>(0, 0));
+    predicted_pose_.pose.pose.position.x = transform(0, 3);
+    predicted_pose_.pose.pose.position.y = transform(1, 3);
+    predicted_pose_.pose.pose.position.z = transform(2, 3);
+    // auto ned_quat = Eigen::Quaterniond(0.0, std::sqrt(2) / 2.0, std::sqrt(2) / 2.0, 0.0);
+    // Eigen::Quaterniond orientation = ned_quat *
+    //     Eigen::Quaterniond(transform.block<3, 3>(0, 0));
+    auto orientation = Eigen::Quaterniond(transform.block<3, 3>(0, 0));
     predicted_pose_.pose.pose.orientation.x = orientation.x();
     predicted_pose_.pose.pose.orientation.y = orientation.y();
     predicted_pose_.pose.pose.orientation.z = orientation.z();
