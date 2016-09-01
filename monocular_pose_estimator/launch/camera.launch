@@ -2,6 +2,7 @@
 
 	<!-- Name of the YAML file containing the marker positions -->
 	<arg name="YAML_file_name" default="pattern_screws"/>
+
 	<arg name="video_device_id" default="/dev/video1"/>
 
 	<!-- File containing the the marker positions in the trackable's frame of reference -->
@@ -29,5 +30,5 @@
       		<param name="roi_border_thickness" value="20" />
 		</node>
 	</group>
-
+	<!--<node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args="1 0 0 0 0 0 1 map myframe 10" />-->
 </launch>
