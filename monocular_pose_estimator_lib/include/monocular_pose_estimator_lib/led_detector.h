@@ -83,7 +83,6 @@ public:
    */
   static void findLeds(const cv::Mat &image, cv::Rect ROI, const int &threshold_value, const double &blur_size,
                        const double &min_blob_area, const double &max_blob_area,
-                       const double &max_width_height_distortion, const double &max_circular_distortion,
                        List2DPoints &pixel_positions, std::vector<cv::Point2f> &distorted_detection_centers,
                        const cv::Mat &camera_matrix_K, const std::vector<double> &camera_distortion_coeffs);
 

@@ -38,22 +38,22 @@ namespace monocular_pose_estimator
 // LED detector
 void LEDDetector::findLeds(const cv::Mat &image, cv::Rect ROI, const int &threshold_value, const double &blur_size,
                            const double &min_blob_area, const double &max_blob_area,
-                           const double &max_width_height_distortion, const double &max_circular_distortion,
                            List2DPoints &pixel_positions, std::vector<cv::Point2f> &distorted_detection_centers,
                            const cv::Mat &camera_matrix_K, const std::vector<double> &camera_distortion_coeffs)
 {
 
   cv::Size ksize; // Box blur kernel size.
-  ksize.width = 2;
-  ksize.height = 2;
+  ksize.width = blur_size;
+  ksize.height = blur_size;
   std::vector<std::vector<cv::Point>> contours;
 
+  // ROI width == 0 is defined as entire image
   if (ROI.width == 0) {
     cv::threshold(image, image, threshold_value, 255, cv::THRESH_TOZERO);
     cv::blur(image, image, ksize);
  
     #ifdef MPE_SHOW_DEBUG_IMAGE
-    cv::imshow("Gaussian", image);
+    cv::imshow("Blurred Image", image);
     cv::waitKey(30); 
     #endif
     
@@ -65,7 +65,7 @@ void LEDDetector::findLeds(const cv::Mat &image, cv::Rect ROI, const int &thresh
     cv::blur(region_image, region_image, ksize);
 
     #ifdef MPE_SHOW_DEBUG_IMAGE
-    cv::imshow("Gaussian", region_image);
+    cv::imshow("Blurred Image", region_image);
     cv::waitKey(30);
     #endif
 

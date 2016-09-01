@@ -1,21 +1,18 @@
-##
+Modified RPG Monocular Pose Estimator
+=====================================
 
-RPG Monocular Pose Estimator
-======================
+PLEASE READ THROUGH CHANGES.md TO FIND OUT WHAT HAS CHANGED IN THIS REPOSITORY.
 
 Disclaimer and License
----------------
+----------------------
 
-The RPG Monocular Pose Estimator has been tested under the following setups:
+The modified RPG Monocular Pose Estimator has been tested under the following setups:
 
-* ROS-Groovy and Ubuntu 12.04
-* ROS-Hydro and Ubuntu 13.10
 * ROS-Indigo and Ubuntu 14.04
 
 This is research code, expect that it changes often and any fitness for a particular purpose is disclaimed.
 
 The source code is released under a GPL licence. Please contact the authors for a commercial license.
-
 
 Package Summary
 ---------------
@@ -213,9 +210,9 @@ exit(gen.generate(PACKAGE, "monocular_pose_estimator", "monocular_pose_estimator
 
   This is the pixel intensity that will be used to threshold the image. All pixels with intensity values below this value will be set to zero. Pixels with intensity values equal to or higher than this value will retain their intensities.
 
-* gaussian_sigma (double, default: 0.6, min: 0, max: 6)
+* blur_size (double, default: 2, min: 0, max: 6)
 
-  This is the standard deviation of the of the Gaussian that will be used to blur the image after being thresholded.
+  This is the size of the applied box blur in pixels.
 
 * min_blob_area (double, default: 10, min: 0, max: 100)
 
@@ -227,10 +224,12 @@ exit(gen.generate(PACKAGE, "monocular_pose_estimator", "monocular_pose_estimator
 
 * max_width_height_distortion (double, default: 0.5, min: 0, max: 1)
 
+  (REMOVED)
   This is a parameter related to the circular distortion of the detected blobs. It is the maximum allowable distortion of a bounding box around the detected blob calculated as the ratio of the width to the height of the bounding rectangle. Ideally the ratio of the width to the height of the bounding rectangle should be 1. 
 
 * max_circular_distortion (double, default: 0.5, min: 0, max: 1)
-
+  
+  (REMOVED)
   This is a parameter related to the circular distortion of the detected blobs. It is the maximum allowable distortion of a bounding box around the detected blob, calculated as the area of the blob divided by pi times half the height or half the width of the bounding rectangle. 
 
 * back_projection_pixel_tolerance (double, default: 3, min: 0, max: 10)
@@ -249,9 +248,9 @@ exit(gen.generate(PACKAGE, "monocular_pose_estimator", "monocular_pose_estimator
 
   This is the ratio of all combinations of 3 of the correspondences that yielded valid poses (i.e., were within the certainty_threshold), for a set of correspondences to be considered valid.
 
-* roi_boarder_thickness (int, default: 10, min: 0, max: 200)
+* roi_border_thickness (int, default: 10, min: 0, max: 200)
 
-  This is the thickness of the boarder (in pixels) around the predicted area of the LEDs in the image that defines the region of interest for image processing and detection of the LEDs.
+  This is the thickness of the border (in pixels) around the predicted area of the LEDs in the image that defines the region of interest for image processing and detection of the LEDs.
 
 #### Launch Files
 

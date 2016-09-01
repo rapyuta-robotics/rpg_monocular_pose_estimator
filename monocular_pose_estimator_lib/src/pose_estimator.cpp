@@ -76,8 +76,7 @@ bool PoseEstimator::estimateBodyPose(cv::Mat image, double time_to_predict) {
     // Do detection of LEDs in image
     LEDDetector::findLeds(
         image, region_of_interest_, detection_threshold_value_, blur_size_,
-        min_blob_area_, max_blob_area_, max_width_height_distortion_,
-        max_circular_distortion_, detected_led_positions,
+        min_blob_area_, max_blob_area_, detected_led_positions,
         distorted_detection_centers_, camera_matrix_K_,
         camera_distortion_coeffs_);
 
@@ -97,8 +96,7 @@ bool PoseEstimator::estimateBodyPose(cv::Mat image, double time_to_predict) {
 
     // Search image within ROI
     LEDDetector::findLeds(image, region_of_interest_, detection_threshold_value_, blur_size_, min_blob_area_,
-                          max_blob_area_, max_width_height_distortion_, max_circular_distortion_,
-                          detected_led_positions, distorted_detection_centers_, camera_matrix_K_,
+                          max_blob_area_, detected_led_positions, distorted_detection_centers_, camera_matrix_K_,
                           camera_distortion_coeffs_);
 
     bool repeat_check = true;
@@ -124,7 +122,6 @@ bool PoseEstimator::estimateBodyPose(cv::Mat image, double time_to_predict) {
           LEDDetector::findLeds(
               image, region_of_interest_, detection_threshold_value_,
               blur_size_, min_blob_area_, max_blob_area_,
-              max_width_height_distortion_, max_circular_distortion_,
               detected_led_positions, distorted_detection_centers_,
               camera_matrix_K_, camera_distortion_coeffs_);
         } 

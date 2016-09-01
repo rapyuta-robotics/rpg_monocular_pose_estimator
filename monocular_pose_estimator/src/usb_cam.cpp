@@ -33,7 +33,7 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *
  *********************************************************************/
-#include "monocular_pose_estimator/usb_cam.h"
+#include "mpe_usb_cam/usb_cam.h"
 
 #define __STDC_CONSTANT_MACROS
 #include <stdio.h>
@@ -321,8 +321,6 @@ void UsbCam::start(const std::string& dev, int image_width,
                    int image_height, int framerate) {
   camera_dev_ = dev;
 
-  // fill_tab(240);
-
   open_device();
   init_device(image_width, image_height, framerate);
   start_capturing();
@@ -358,7 +356,7 @@ void UsbCam::grab_image(sensor_msgs::Image* msg) {
             image_->image);
 }
 
-char* UsbCam::get_image_pointer() {
+char* UsbCam::grab_image_pointer() {
   grab_image();
   return image_->image;
 }
