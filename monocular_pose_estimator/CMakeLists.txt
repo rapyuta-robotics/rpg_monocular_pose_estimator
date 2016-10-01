@@ -32,7 +32,7 @@ generate_dynamic_reconfigure_options(cfg/MonocularPoseEstimator.cfg)
 # export the dependencies of this package for who ever depends on us
 catkin_package(
   INCLUDE_DIRS include
-  CATKIN_DEPENDS roscpp cv_bridge image_transport dynamic_reconfigure sensor_msgs geometry_msgs monocular_pose_estimator_lib nodelet
+  CATKIN_DEPENDS opencv roscpp cv_bridge image_transport dynamic_reconfigure sensor_msgs geometry_msgs monocular_pose_estimator_lib nodelet
   DEPENDS eigen OpenCV
 )
 
@@ -86,10 +86,10 @@ target_link_libraries(monocular_pose_estimator_nodelet
    ${catkin_LIBRARIES}
    ${OpenCV_LIBRARIES}
 )
- 
-install(TARGETS 
+
+install(TARGETS
     monocular_pose_estimator
-    monocular_pose_estimator_nodelet 
+    monocular_pose_estimator_nodelet
     monocular_pose_estimator_usb_cam
     ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
     LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
