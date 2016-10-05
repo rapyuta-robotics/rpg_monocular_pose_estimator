@@ -1,4 +1,5 @@
-# The marker positions in the trackable's frame of reference:
+# pattern_gamma corresponds to the SMALL size pattern.
+# The marker positions in the pattern's frame of reference:
 #
 marker_positions:
   - x: -0.0130

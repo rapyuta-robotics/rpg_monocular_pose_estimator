@@ -1,15 +1,15 @@
-<launch> 
+<launch>
 
 	<!-- Name of the YAML file containing the marker positions -->
-	<arg name="YAML_file_name" default="pattern_screws"/>
+	<arg name="YAML_file_name" default="pattern_gamma"/>
 
 	<arg name="video_device_id" default="/dev/video1"/>
 
 	<!-- File containing the the marker positions in the trackable's frame of reference -->
-	<arg name="marker_positions_file" default="$(find monocular_pose_estimator)/marker_positions/$(arg YAML_file_name).yaml"/> 
+	<arg name="marker_positions_file" default="$(find monocular_pose_estimator)/marker_positions/$(arg YAML_file_name).yaml"/>
 
 	<group ns="monocular_pose_estimator" >
-		<node name="monocular_pose_estimator" pkg="monocular_pose_estimator" 
+		<node name="monocular_pose_estimator" pkg="monocular_pose_estimator"
 			  type="monocular_pose_estimator_usb_cam" respawn="false" output="screen">
 			<rosparam command="load" file="$(arg marker_positions_file)"/>
 
