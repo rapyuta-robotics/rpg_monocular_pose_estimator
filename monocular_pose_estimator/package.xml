@@ -29,6 +29,7 @@
   <run_depend>monocular_pose_estimator_lib</run_depend>
   <run_depend>nodelet</run_depend>
   <run_depend>opencv</run_depend>
+  <run_depend>v4l-utils</run_depend>
 
   <export>
     <nodelet plugin="${prefix}/monocular_pose_estimator_nodelet.xml"/>
