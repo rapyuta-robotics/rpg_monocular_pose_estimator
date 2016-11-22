@@ -74,6 +74,17 @@ target_link_libraries(monocular_pose_estimator_usb_cam
    ${catkin_LIBRARIES}
 )
 
+add_executable(point_detection_node
+  src/usb_cam.cpp
+  src/point_detection_node.cpp
+)
+
+target_link_libraries(point_detection_node
+   yaml-cpp
+   ${OpenCV_LIBRARIES}
+   ${catkin_LIBRARIES}
+)
+
 # make the nodelet
 add_library(monocular_pose_estimator_nodelet
   src/nodelet.cpp src/monocular_pose_estimator.cpp
@@ -91,6 +102,7 @@ install(TARGETS
     monocular_pose_estimator
     monocular_pose_estimator_nodelet
     monocular_pose_estimator_usb_cam
+    point_detection_node
     ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
     LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
     RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
