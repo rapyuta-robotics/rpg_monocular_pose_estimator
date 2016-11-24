@@ -122,6 +122,8 @@ void PointDetectionNode::run() {
   cv::Mat image =
       cv::Mat(480, 640, CV_8U, (void*) video_capture_.grab_image_pointer());
 
+  detectLEDs(image);
+
   // publish visualization image
   if (image_pub_.getNumSubscribers() > 0) {
     cv::Mat visualized_image = image.clone();
@@ -134,6 +136,26 @@ void PointDetectionNode::run() {
 
     image_pub_.publish(visualized_image_msg.toImageMsg());
   }
+}
+
+void PointDetectionNode::detectLEDs(cv::Mat image) {
+  // Set up pixel positions list
+  List2DPoints detected_led_positions;
+
+  // use the whole image by default
+  region_of_interest_ = cv::Rect(0, 0, image.cols, image.rows);
+
+  // Do detection of LEDs in image
+  LEDDetector::findLeds(
+      image, region_of_interest_,
+      trackable_object_.detection_threshold_value_,
+      trackable_object_.blur_size_,
+      trackable_object_.min_blob_area_,
+      trackable_object_.max_blob_area_,
+      detected_led_positions,
+      trackable_object_.distorted_detection_centers_,
+      trackable_object_.camera_matrix_K_,
+      trackable_object_.camera_distortion_coeffs_);
 }
 
 void PointDetectionNode::setCameraParameters() {

@@ -60,6 +60,11 @@ private:
 
   void setCameraParameters();
 
+  cv::Rect region_of_interest_; //!< OpenCV rectangle that defines the region of interest to be processd to find the LEDs in the image
+
+  // convenience function for making all of the relevent LED detection calls
+  void detectLEDs(cv::Mat image);
+
 public:
 
   PointDetectionNode(const ros::NodeHandle& nh, const ros::NodeHandle& nh_private);
