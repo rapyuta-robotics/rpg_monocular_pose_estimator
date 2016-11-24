@@ -11,6 +11,9 @@ PointDetectionNode::PointDetectionNode(const ros::NodeHandle& nh, const ros::Nod
   // Set up a dynamic reconfigure server.
   // This should be done before reading parameter server values.
 
+  detection_pub_ =
+    nh_.advertise<std_msgs::Int32MultiArray>("led_detection_array", 100);
+
   dynamic_reconfigure::Server<
       monocular_pose_estimator::MonocularPoseEstimatorConfig>::CallbackType cb_;
   cb_ = boost::bind(&PointDetectionNode::dynamicParametersCallback, this, _1, _2);
@@ -156,6 +159,22 @@ void PointDetectionNode::detectLEDs(cv::Mat image) {
       trackable_object_.distorted_detection_centers_,
       trackable_object_.camera_matrix_K_,
       trackable_object_.camera_distortion_coeffs_);
+
+    // allocate the message
+    std_msgs::Int32MultiArray led_detection_array_msg;
+
+    //Clear array
+    led_detection_array_msg.data.clear();
+
+    //for loop, pushing data in the size of the array
+    for (int i = 0; i < detected_led_positions.size(); i++)
+    {
+      // push the coordinates onto the array
+      led_detection_array_msg.data.push_back(int(detected_led_positions(i)(0))); //x
+      led_detection_array_msg.data.push_back(int(detected_led_positions(i)(1))); //y
+    }
+    //Publish array
+     detection_pub_.publish(led_detection_array_msg);
 }
 
 void PointDetectionNode::setCameraParameters() {

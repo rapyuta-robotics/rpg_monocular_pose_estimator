@@ -7,6 +7,8 @@
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/image_encodings.h>
 
+#include <std_msgs/Int32MultiArray.h>
+
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
@@ -36,6 +38,8 @@ private:
   ros::NodeHandle nh_private_;
 
   image_transport::Publisher image_pub_; //!< The ROS image publisher that publishes the visualisation image
+
+  ros::Publisher detection_pub_; //!< Publisher for detected LEDs
 
   usb_cam::UsbCam video_capture_; //!< OpenCV video capture device
 
