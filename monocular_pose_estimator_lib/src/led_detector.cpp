@@ -51,14 +51,14 @@ void LEDDetector::findLeds(const cv::Mat &image, cv::Rect ROI, const int &thresh
   if (ROI.width == 0) {
     cv::threshold(image, image, threshold_value, 255, cv::THRESH_TOZERO);
     cv::blur(image, image, ksize);
- 
+
     #ifdef MPE_SHOW_DEBUG_IMAGE
     cv::imshow("Blurred Image", image);
-    cv::waitKey(30); 
+    cv::waitKey(30);
     #endif
-    
+
     cv::findContours(image, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
-  } 
+  }
   else {
     cv::Mat region_image;
     cv::threshold(image(ROI), region_image, threshold_value, 255, cv::THRESH_TOZERO);
@@ -104,9 +104,8 @@ void LEDDetector::findLeds(const cv::Mat &image, cv::Rect ROI, const int &thresh
     // Vector that will contain the undistorted points
     std::vector<cv::Point2f> undistorted_points;
 
-    // Undistort the points
-    cv::undistortPoints(distorted_points, undistorted_points, camera_matrix_K, camera_distortion_coeffs, cv::noArray(),
-                        camera_matrix_K);
+    // Undistort the points (keep points normalized though)
+    cv::undistortPoints(distorted_points, undistorted_points, camera_matrix_K, camera_distortion_coeffs);
 
     // Resize the vector to hold all the possible LED points
     pixel_positions.resize(numPoints);

@@ -7,7 +7,7 @@
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/image_encodings.h>
 
-#include <std_msgs/Int32MultiArray.h>
+#include <std_msgs/Float32MultiArray.h>
 
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <Eigen/Dense>

@@ -12,7 +12,7 @@ PointDetectionNode::PointDetectionNode(const ros::NodeHandle& nh, const ros::Nod
   // This should be done before reading parameter server values.
 
   detection_pub_ =
-    nh_.advertise<std_msgs::Int32MultiArray>("led_detection_array", 100);
+    nh_.advertise<std_msgs::Float32MultiArray>("led_detection_array", 100);
 
   dynamic_reconfigure::Server<
       monocular_pose_estimator::MonocularPoseEstimatorConfig>::CallbackType cb_;
@@ -161,7 +161,7 @@ void PointDetectionNode::detectLEDs(cv::Mat image) {
       trackable_object_.camera_distortion_coeffs_);
 
     // allocate the message
-    std_msgs::Int32MultiArray led_detection_array_msg;
+    std_msgs::Float32MultiArray led_detection_array_msg;
 
     //Clear array
     led_detection_array_msg.data.clear();
@@ -169,9 +169,11 @@ void PointDetectionNode::detectLEDs(cv::Mat image) {
     //for loop, pushing data in the size of the array
     for (int i = 0; i < detected_led_positions.size(); i++)
     {
+      // ROS_INFO_STREAM("LED[" << i << "] - x: " << detected_led_positions(i)(0) << ", y: " << detected_led_positions(i)(1));
       // push the coordinates onto the array
-      led_detection_array_msg.data.push_back(int(detected_led_positions(i)(0))); //x
-      led_detection_array_msg.data.push_back(int(detected_led_positions(i)(1))); //y
+      // @todo: convert to float message (Vector2List end goal)
+      led_detection_array_msg.data.push_back((detected_led_positions(i)(0))); //x
+      led_detection_array_msg.data.push_back((detected_led_positions(i)(1))); //y
     }
     //Publish array
      detection_pub_.publish(led_detection_array_msg);
