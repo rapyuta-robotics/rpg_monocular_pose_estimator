@@ -23,7 +23,7 @@ include_directories(
 file(GLOB SOURCEFILES "src/*.cpp")
 
 add_library(${PROJECT_NAME} SHARED ${SOURCEFILES})
-add_dependencies(${PROJECT_NAME} SHARED ${catkin_EXPORTED_TARGETS} ) 
+add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS} ) 
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
 install(TARGETS ${PROJECT_NAME} 
