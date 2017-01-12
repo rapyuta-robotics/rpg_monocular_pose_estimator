@@ -32,6 +32,7 @@
   <exec_depend>monocular_pose_estimator_lib</exec_depend>
   <exec_depend>nodelet</exec_depend>
   <exec_depend>camera_calibration_parsers</exec_depend>
+  <exec_depend>v4l-utils</exec_depend>
 
   <export>
     <nodelet plugin="${prefix}/monocular_pose_estimator_nodelet.xml"/>
