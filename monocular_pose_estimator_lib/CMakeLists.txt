@@ -4,7 +4,6 @@ project(monocular_pose_estimator_lib)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3")
 
 find_package(catkin REQUIRED COMPONENTS cmake_modules roscpp)
-find_package(Eigen3 REQUIRED)
 find_package(OpenCV REQUIRED)
 
 find_package(Eigen3 REQUIRED)

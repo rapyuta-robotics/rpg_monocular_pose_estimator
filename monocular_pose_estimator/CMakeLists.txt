@@ -21,7 +21,15 @@ find_package(catkin REQUIRED COMPONENTS
 
 # since we need eigen search it as well
 # find_package makes the ${..._INCLUDE_DIRS} ${..._LIBRARIES} variables we use later
-find_package(Eigen REQUIRED)
+find_package(Eigen3 REQUIRED)
+set(EIGEN3_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})  ### TODO: TEMPORARY FOR 14.04
+
+find_package(PkgConfig)
+pkg_search_module(yaml-cpp REQUIRED yaml-cpp)
+
+if(NOT ${yaml-cpp_VERSION} VERSION_LESS "0.5")
+  add_definitions(-DNEW_YAMLCPP)
+endif()
 
 # Generate the reconfigure options
 generate_dynamic_reconfigure_options(cfg/MonocularPoseEstimator.cfg)
@@ -30,14 +38,15 @@ generate_dynamic_reconfigure_options(cfg/MonocularPoseEstimator.cfg)
 catkin_package(
   INCLUDE_DIRS include
   CATKIN_DEPENDS roscpp cv_bridge image_transport dynamic_reconfigure sensor_msgs geometry_msgs monocular_pose_estimator_lib nodelet
-  DEPENDS eigen
+  DEPENDS EIGEN3 yaml-cpp
 )
 
 # tell catkin where to find the headers for this project
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  ${EIGEN_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
+  ${yaml-cpp_INCLUDE_DIRS}
 )
 
 # make the node
@@ -55,6 +64,8 @@ endif(MPE_ENABLE_DEBUG_IMAGES)
 target_link_libraries(monocular_pose_estimator
    yaml-cpp
    ${catkin_LIBRARIES}
+   ${EIGEN3_INCLUDE_DIRS}
+   ${yaml-cpp_LIBRARIES}
 )
 
 add_executable(monocular_pose_estimator_usb_cam
@@ -66,6 +77,8 @@ add_executable(monocular_pose_estimator_usb_cam
 target_link_libraries(monocular_pose_estimator_usb_cam
    yaml-cpp
    ${catkin_LIBRARIES}
+   ${EIGEN3_INCLUDE_DIRS}
+   ${yaml-cpp_LIBRARIES}
 )
 
 add_executable(point_detection_node
@@ -76,6 +89,8 @@ add_executable(point_detection_node
 target_link_libraries(point_detection_node
    yaml-cpp
    ${catkin_LIBRARIES}
+   ${EIGEN3_INCLUDE_DIRS}
+   ${yaml-cpp_LIBRARIES}
 )
 
 # make the nodelet
@@ -88,6 +103,8 @@ add_dependencies(monocular_pose_estimator_nodelet ${catkin_EXPORTED_TARGETS}  ${
 target_link_libraries(monocular_pose_estimator_nodelet
    yaml-cpp
    ${catkin_LIBRARIES}
+   ${EIGEN3_INCLUDE_DIRS}
+   ${yaml-cpp_LIBRARIES}
 )
 
 install(TARGETS
