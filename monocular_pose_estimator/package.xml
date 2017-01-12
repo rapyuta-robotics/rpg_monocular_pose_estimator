@@ -9,29 +9,22 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_export_depend>yaml-cpp</build_export_depend>
   <build_depend>yaml-cpp</build_depend>
+  <build_export_depend>yaml-cpp</build_export_depend>
 
-  <build_depend>roscpp</build_depend>
-  <build_depend>cv_bridge</build_depend>
-  <build_depend>image_transport</build_depend>
-  <build_depend>dynamic_reconfigure</build_depend>
-  <build_depend>sensor_msgs</build_depend>
-  <build_depend>geometry_msgs</build_depend>
-  <build_depend>monocular_pose_estimator_lib</build_depend>
-  <build_depend>cmake_modules</build_depend>
-  <build_depend>nodelet</build_depend>
-  <build_depend>camera_calibration_parsers</build_depend>
+  <build_depend>eigen</build_depend>
+  <build_export_depend>eigen</build_export_depend>
 
-  <exec_depend>roscpp</exec_depend>
-  <exec_depend>cv_bridge</exec_depend>
-  <exec_depend>image_transport</exec_depend>
-  <exec_depend>dynamic_reconfigure</exec_depend>
-  <exec_depend>sensor_msgs</exec_depend>
-  <exec_depend>geometry_msgs</exec_depend>
-  <exec_depend>monocular_pose_estimator_lib</exec_depend>
-  <exec_depend>nodelet</exec_depend>
-  <exec_depend>camera_calibration_parsers</exec_depend>
+  <depend>roscpp</depend>
+  <depend>cv_bridge</depend>
+  <depend>image_transport</depend>
+  <depend>dynamic_reconfigure</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>monocular_pose_estimator_lib</depend>
+  <depend>nodelet</depend>
+  <depend>camera_calibration_parsers</depend>
+
   <exec_depend>v4l-utils</exec_depend>
 
   <export>

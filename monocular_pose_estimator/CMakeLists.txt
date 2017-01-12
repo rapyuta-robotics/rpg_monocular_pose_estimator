@@ -14,7 +14,6 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   geometry_msgs
   monocular_pose_estimator_lib
-  cmake_modules
   camera_calibration_parsers
   nodelet
 )
@@ -37,7 +36,7 @@ generate_dynamic_reconfigure_options(cfg/MonocularPoseEstimator.cfg)
 # export the dependencies of this package for who ever depends on us
 catkin_package(
   INCLUDE_DIRS include
-  CATKIN_DEPENDS roscpp cv_bridge image_transport dynamic_reconfigure sensor_msgs geometry_msgs monocular_pose_estimator_lib nodelet
+  CATKIN_DEPENDS roscpp cv_bridge image_transport dynamic_reconfigure sensor_msgs geometry_msgs monocular_pose_estimator_lib camera_calibration_parsers nodelet
   DEPENDS EIGEN3 yaml-cpp
 )
 
