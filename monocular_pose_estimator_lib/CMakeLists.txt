@@ -4,20 +4,23 @@ project(monocular_pose_estimator_lib)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3")
 
 find_package(catkin REQUIRED COMPONENTS cmake_modules roscpp)
-find_package(Eigen REQUIRED)
+find_package(Eigen3 REQUIRED)
 find_package(OpenCV REQUIRED)
+
+find_package(Eigen3 REQUIRED)
+set(EIGEN3_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})  ### TODO: TEMPORARY FOR 14.04
 
 
 catkin_package(
   INCLUDE_DIRS include
-  DEPENDS eigen opencv
+  DEPENDS EIGEN3 opencv
   LIBRARIES ${PROJECT_NAME}
 )
 
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  ${EIGEN_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
 )
 

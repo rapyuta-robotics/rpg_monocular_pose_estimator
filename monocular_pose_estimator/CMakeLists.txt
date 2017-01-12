@@ -23,17 +23,14 @@ find_package(catkin REQUIRED COMPONENTS
 # find_package makes the ${..._INCLUDE_DIRS} ${..._LIBRARIES} variables we use later
 find_package(Eigen REQUIRED)
 
-# Add opencv
-find_package(OpenCV REQUIRED)
-
 # Generate the reconfigure options
 generate_dynamic_reconfigure_options(cfg/MonocularPoseEstimator.cfg)
 
 # export the dependencies of this package for who ever depends on us
 catkin_package(
   INCLUDE_DIRS include
-  CATKIN_DEPENDS opencv roscpp cv_bridge image_transport dynamic_reconfigure sensor_msgs geometry_msgs monocular_pose_estimator_lib nodelet
-  DEPENDS eigen OpenCV
+  CATKIN_DEPENDS roscpp cv_bridge image_transport dynamic_reconfigure sensor_msgs geometry_msgs monocular_pose_estimator_lib nodelet
+  DEPENDS eigen
 )
 
 # tell catkin where to find the headers for this project
@@ -41,7 +38,6 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${EIGEN_INCLUDE_DIRS}
-  ${OpenCV_INCLUDE_DIRS}
 )
 
 # make the node
@@ -59,7 +55,6 @@ endif(MPE_ENABLE_DEBUG_IMAGES)
 target_link_libraries(monocular_pose_estimator
    yaml-cpp
    ${catkin_LIBRARIES}
-   ${OpenCV_LIBRARIES}
 )
 
 add_executable(monocular_pose_estimator_usb_cam
@@ -70,7 +65,6 @@ add_executable(monocular_pose_estimator_usb_cam
 
 target_link_libraries(monocular_pose_estimator_usb_cam
    yaml-cpp
-   ${OpenCV_LIBRARIES}
    ${catkin_LIBRARIES}
 )
 
@@ -81,7 +75,6 @@ add_executable(point_detection_node
 
 target_link_libraries(point_detection_node
    yaml-cpp
-   ${OpenCV_LIBRARIES}
    ${catkin_LIBRARIES}
 )
 
@@ -95,7 +88,6 @@ add_dependencies(monocular_pose_estimator_nodelet ${catkin_EXPORTED_TARGETS}  ${
 target_link_libraries(monocular_pose_estimator_nodelet
    yaml-cpp
    ${catkin_LIBRARIES}
-   ${OpenCV_LIBRARIES}
 )
 
 install(TARGETS

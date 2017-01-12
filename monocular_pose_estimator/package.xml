@@ -1,4 +1,4 @@
-<package>
+<package format="2">
   <name>monocular_pose_estimator</name>
   <version>2.1.2</version>
   <description>
@@ -20,16 +20,14 @@
   <build_depend>nodelet</build_depend>
   <build_depend>camera_calibration_parsers</build_depend>
 
-  <run_depend>roscpp</run_depend>
-  <run_depend>cv_bridge</run_depend>
-  <run_depend>image_transport</run_depend>
-  <run_depend>dynamic_reconfigure</run_depend>
-  <run_depend>sensor_msgs</run_depend>
-  <run_depend>geometry_msgs</run_depend>
-  <run_depend>monocular_pose_estimator_lib</run_depend>
-  <run_depend>nodelet</run_depend>
-  <run_depend>opencv</run_depend>
-  <run_depend>v4l-utils</run_depend>
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>cv_bridge</exec_depend>
+  <exec_depend>image_transport</exec_depend>
+  <exec_depend>dynamic_reconfigure</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>monocular_pose_estimator_lib</exec_depend>
+  <exec_depend>nodelet</exec_depend>
 
   <export>
     <nodelet plugin="${prefix}/monocular_pose_estimator_nodelet.xml"/>
