@@ -116,10 +116,6 @@ install(TARGETS
     RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-install(DIRECTORY launch marker_positions
-    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-)
-
-install(FILES monocular_pose_estimator_nodelet.xml cfg/eCon_camera.yaml
+install(DIRECTORY cfg launch marker_positions
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )

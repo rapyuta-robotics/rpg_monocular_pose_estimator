@@ -1,7 +1,7 @@
 <launch>
 
     <arg name="video_device_id" default="/dev/video1"/>
-    <arg name="camera_info_url" default="$(env HOME)/.ros/camera_info/head_camera.yaml"/>
+    <arg name="camera_info_url" default="$(find monocular_pose_estimator)/cfg/eCon_camera.yaml"/>
 
     <group ns="point_detector" >
         <node name="point_detection" pkg="monocular_pose_estimator"
