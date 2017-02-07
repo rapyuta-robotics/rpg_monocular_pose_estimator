@@ -119,3 +119,7 @@ install(TARGETS
 install(DIRECTORY cfg launch marker_positions
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
+
+install(FILES monocular_pose_estimator_nodelet.xml
+    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
