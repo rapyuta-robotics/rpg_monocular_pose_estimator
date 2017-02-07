@@ -1,13 +1,14 @@
 <launch>
 
     <arg name="video_device_id" default="/dev/video1"/>
+    <arg name="camera_info_url" default="$(env HOME)/.ros/camera_info/head_camera.yaml"/>
 
     <group ns="point_detector" >
         <node name="point_detection" pkg="monocular_pose_estimator"
               type="point_detection_node" respawn="false" output="screen">
 
             <param name="video_device_id" value="$(arg video_device_id)" />
-            <param name="camera_info_url" value="$(env HOME)/.ros/camera_info/head_camera.yaml" />
+            <param name="camera_info_url" value="$(arg camera_info_url)" />
             <param name="camera_autoexposure" value="false" />
             <param name="camera_contrast" value="10" />
             <param name="camera_exposure" value="1" />
